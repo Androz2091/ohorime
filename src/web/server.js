@@ -8,8 +8,8 @@ const axios = require('axios');
 
 module.exports = function(client) {
   client.site = require('http').createServer(app)
-      .listen(client.config.port, 'localhost', () =>
-        console.log(`App listening on ${client.config.port}`));
+      .listen(8030, 'localhost', () =>
+        console.log(`App listening on 8030`));
 
   app.use(function(req, res, next) {
     console.log(`API has been called with this url: ${req.url}`);
@@ -41,21 +41,21 @@ module.exports = function(client) {
       conf: key[1].conf,
     };
   };
-  app.get('/api/command', (req, res) => {
+  app.get('/command', (req, res) => {
     return res.status(202).json(cmd);
   });
-  app.get('/api/guilds', async (req, res) => {
+  app.get('/guilds', async (req, res) => {
     return res.status(202).json(await client.shard.fetchClientValues('guilds.cache'));
   });
-  app.get('/api/users', async (req, res) => {
+  app.get('/users', async (req, res) => {
     return res.status(202).json(await User.find());
   });
-  app.get('/api/user/:id', async (req, res) => {
+  app.get('/user/:id', async (req, res) => {
     const users = await User.findOne({id: req.params.id});
-    if (!users) return res.status(202).json({error: true, message: 'user not found'});
+    if (!users) return res.status(404).json({error: true, message: 'user not found'});
     return res.status(202).json(users);
   });
-  app.post('/api/purchase', async (req, res) => {
+  app.post('/user/purchase', async (req, res) => {
     if (req.headers.authorization !== client.config.authorization) return res.status(403).json({error: true, message: 'authorization refused'});
     const user = await User.findOne({id: req.body.id});
     if (!user) return res.status(202).json({error: true, message: 'user not found'});
@@ -73,10 +73,10 @@ module.exports = function(client) {
       items: user.items,
     }).then(() => {return {error: false, message: 'OK'}}).catch((e) => {return {error: true, message: e.message}}));
   });
-  app.post('/api/setbanner', async (req, res) => {
+  app.post('/user/setbanner', async (req, res) => {
     const user = await User.findOne({id: req.body.id});
-    if (!user) return res.status(202).json({error: true, message: 'user not found'});
-    if (!user.items.some(v => v.id === req.body.item)) return res.status(202).json({error: true, message: 'item not found'});
+    if (!user) return res.status(404).json({error: true, message: 'user not found'});
+    if (!user.items.some(v => v.id === req.body.item)) return res.status(404).json({error: true, message: 'item not found'});
     const item = user.items.find(v => v.id === req.body.item);
     return res.status(202).json(await client.updateUser(user, {
       banner: {

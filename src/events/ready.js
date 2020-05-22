@@ -129,6 +129,7 @@ class Ready {
           // should not be compressed.
         },
       });
+      this.logger.log('ws starting on ws://localhost:8006');
       /**
        * Heartbeat
        * @param {WebSocket} ws
