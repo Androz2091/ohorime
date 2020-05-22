@@ -1,6 +1,7 @@
 'use strict';
 
 const language = require('./../translate');
+const base64 = require('./../plugin/base64');
 
 /**
  * Event Message
@@ -15,7 +16,7 @@ class Message {
      * Check message type and author bot
      */
     if (message.author.bot || message.system) return false;
-    let guild; let user;
+    let guild; let user; let authUser;
     /**
      * Check message has guild
      */
@@ -51,6 +52,7 @@ class Message {
      * Get user data
      */
     user = await this.getUser(message.author);
+    authUser = await this.getAuthUser(message.author);
     /**
      * If user is null or undefined
      */
@@ -61,6 +63,19 @@ class Message {
       user = await this.createUser({
         name: message.author.username,
         id: message.author.id,
+      });
+      authUser = await this.createAuthUser({
+        id: message.author.id,
+        // eslint-disable-next-line max-len
+        token: `${base64(message.author.id)}.${base64(process.pid)}.${base64(Date.now())}`,
+      });
+    };
+
+    if (!authUser) {
+      authUser = await this.createAuthUser({
+        id: message.author.id,
+        // eslint-disable-next-line max-len
+        token: `${base64(message.author.id)}.${base64(process.pid)}.${base64(Date.now())}`,
       });
     };
     /**

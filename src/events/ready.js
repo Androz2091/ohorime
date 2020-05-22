@@ -175,9 +175,42 @@ class Ready {
                 results.reduce((prev, memberCount) => prev + memberCount, 0),
               ),
         }, t: 'MEMBER_COUNT_UPDATE'}));
+        // SHARD INFO
+        ws.send(JSON.stringify({op: 1, d: {
+          shards: await this.shard.broadcastEval(`
+            const d = {
+              ping: this.ws.ping,
+              guilds: this.guilds.cache.size,
+              users: this.users.cache.size,
+              gateway: this.ws.gateway,
+              status: this.ws.status,
+              memoryUsage: process.memoryUsage(),
+            };
+            d;
+          `),
+        }, t: 'SHARD_UPDATE'}));
       }.bind(this));
 
       /* BROADCAST */
+
+      setTimeout(function() {
+        wss.clients.forEach(async function each(ws) {
+          ws.send(JSON.stringify({op: 1, d: {
+            shards: await this.shard.broadcastEval(`
+              const d = {
+                ping: this.ws.ping,
+                guilds: this.guilds.cache.size,
+                users: this.users.cache.size,
+                gateway: this.ws.gateway,
+                status: this.ws.status,
+                memoryUsage: process.memoryUsage(),
+              };
+              d;
+            `),
+          }, t: 'SHARD_UPDATE'}));
+        }.bind(this));
+      }.bind(this), 60000);
+
       /* MESSAGE COUNT */
       this.coreExchange.on('messageCount', function(count) {
         wss.clients.forEach(function each(ws) {

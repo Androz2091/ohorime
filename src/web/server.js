@@ -3,7 +3,7 @@
 const express = require('express');
 const app = express();
 const serializeJSON = require('../plugin/SerializeJSON');
-const {User} = require('./../database/lib');
+const {User, AuthUser} = require('./../database/lib');
 const axios = require('axios');
 
 module.exports = function(client) {
@@ -56,9 +56,10 @@ module.exports = function(client) {
     return res.status(202).json(users);
   });
   app.post('/user/purchase', async (req, res) => {
-    if (req.headers.authorization !== client.config.authorization) return res.status(403).json({error: true, message: 'authorization refused'});
     const user = await User.findOne({id: req.body.id});
     if (!user) return res.status(202).json({error: true, message: 'user not found'});
+    if ((req.headers.authorization !== client.config.authorization)
+      && (req.headers.authorization !== await AuthUser.find({id: req.body.id}).token)) return res.status(403).json({error: true, message: 'authorization refused'});
     let store = await axios({url: 'https://cdn.ohori.me/store.json', method: 'GET', headers: {'Content-Type': 'application/json'}})
       .then(response => response.data).catch(e => e);
     store = serializeJSON(store['background']);
@@ -76,6 +77,8 @@ module.exports = function(client) {
   app.post('/user/setbanner', async (req, res) => {
     const user = await User.findOne({id: req.body.id});
     if (!user) return res.status(404).json({error: true, message: 'user not found'});
+    if ((req.headers.authorization !== client.config.authorization)
+      && (req.headers.authorization !== await AuthUser.find({id: req.body.id}).token)) return res.status(403).json({error: true, message: 'authorization refused'});
     if (!user.items.some(v => v.id === req.body.item)) return res.status(404).json({error: true, message: 'item not found'});
     const item = user.items.find(v => v.id === req.body.item);
     return res.status(202).json(await client.updateUser(user, {
