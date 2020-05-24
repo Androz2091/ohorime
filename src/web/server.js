@@ -59,17 +59,21 @@ module.exports = function(client) {
 
   app.post('/user/purchase', async (req, res) => {
     const user = await User.findOne({id: req.body.id});
-    if (!user) return res.status(202).json({error: true, message: 'user not found'});
+    if (!user) return res.status(404).json({error: true, message: 'user not found'});
     if ((req.headers.authorization !== client.config.authorization)
       && (req.headers.authorization !== await AuthUser.findOne({id: req.body.id}).token)) return res.status(403).json({error: true, message: 'authorization refused'});
     let store = await axios({url: 'https://cdn.ohori.me/store.json', method: 'GET', headers: {'Content-Type': 'application/json'}})
       .then(response => response.data).catch(e => e);
-    store = serializeJSON(store['background']);
-    if (!store) return res.status(202).json({error: true, message: 'store not found'});
-    if (!store.some(v => v.id === req.body.item)) return res.status(202).json({error: true, message: 'item not found'});
-    const item = store.find(v => v.id === req.body.item)
-    if (user.items.some(v => v.id === item.id)) return res.status(202).json({error: true, message: 'user has already this item'});
-    if (user.coins < item.price) return res.status(202).json({error: true, message: 'insufficient balance'});
+    if (!store) return res.status(404).json({error: true, message: 'store not found'});
+    const serialize = [];
+    for (const key in store.category) {
+      store.category[key].id = key;
+      serialize.push(store.category[key]);
+    };
+    if (!serialize.some(v => v.id === req.body.item)) return res.status(404).json({error: true, message: 'item not found'});
+    const item = serialize.find(v => v.id === req.body.item);
+    if (user.items.some(v => v.id === item.id)) return res.status(400).json({error: true, message: 'user has already this item'});
+    if (user.coins < item.price) return res.status(400).json({error: true, message: 'insufficient balance'});
     user.items.push(item);
     return res.status(202).json(await client.updateUser(user, {
       coins: user.coins - item.price,
@@ -87,7 +91,7 @@ module.exports = function(client) {
     return res.status(202).json(await client.updateUser(user, {
       banner: {
         id: item.id,
-        extension: [item.extension, 'png'],
+        extension: item.extension,
       },
     }).then(() => {return {error: false, message: 'OK'}}).catch((e) => {return {error: true, message: e.message}}));
   });
