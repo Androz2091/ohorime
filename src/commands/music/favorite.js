@@ -40,20 +40,27 @@ class Favorite extends Command {
     switch (query.shift()) {
       case 'save':
         const msgLoad =
-          await message.channel.send(`saving ${
-            this.client.config.emote.loading.id}`);
+          await message.channel.send(
+              language(guild.lg, 'command_favorite_saving')
+                  .replace(/{{emote}}+/g,
+                      this.client.config.emote.loading.id));
         if (guild.player_history < 1) {
           msgLoad.edit(`failed ${
             this.client.config.emote.no.id
           }`);
-          return message.channel.send('This playlist is empty');
+          return message.channel.send(
+              language(guild.lg, 'command_favorite_noPlaylist'),
+          );
         };
         if (!query.join(' ')) {
           msgLoad.edit(`failed ${
             this.client.config.emote.no.id
           }`);
           // eslint-disable-next-line max-len
-          return message.channel.send(`Please enter name, example: \`${guild.prefix}favorite save myPlaylist\``);
+          return message.channel.send(
+              language(guild.lg, 'command_favorite_enterName')
+                  .replace(/{{prefix}}+/g, guild.prefix),
+          );
         };
         if (!user.musicFavorite) user.musicFavorite = {};
         if (!user.musicFavorite[query.join(' ')]) {
@@ -65,30 +72,37 @@ class Favorite extends Command {
           message.channel.send({
             embed: {
               color: '#2F3136',
-              title: 'your favorite list',
+              title: language(guild.lg, 'command_favorite_save_embed_title'),
               description: 'arguments: `save`, `play`, `vue`, `delete`\n\n'+
                `${Object.keys(user.musicFavorite).map((v, i) =>
                  `[${i+1}] ${v}`).join('\n')}`,
             },
           });
-          msgLoad.edit(`successful ${
-            this.client.config.emote.yes.id
-          }`);
+          msgLoad.edit(
+              language(guild.lg, 'command_favorite_successful')
+                  .replace(/{{emote}}+/g, this.client.config.emote.yes.id),
+          );
         } else {
-          msgLoad.edit(`failed ${
-            this.client.config.emote.no.id
-          }`);
-          return message.channel.send('The name is already in use');
+          msgLoad.edit(
+              language(guild.lg, 'command_favorite_failed')
+                  .replace(/{{emote}}+/g, this.client.config.emote.no.id),
+          );
+          return message.channel.send(
+              language(guild.lg, 'command_favorite_nameUsed'));
         }
         break;
       case 'vue':
         const index = query.shift();
         if (!index) {
-          return message.channel.send('Please select a number');
+          return message.channel.send(
+              language(guild.lg, 'command_favorite_selectNumber'),
+          );
         };
         if (!user.musicFavorite) user.musicFavorite = {};
         if (!Object.keys(user.musicFavorite)[index-1]) {
-          return message.channel.send('Please select a valid number');
+          return message.channel.send(
+              language(guild.lg, 'command_favorite_selectValidNumber'),
+          );
         };
         return message.channel.send({
           embed: {
@@ -103,11 +117,15 @@ class Favorite extends Command {
         break;
       case 'delete':
         if (!query.join('')) {
-          return message.channel.send('Please select a number');
+          return message.channel.send(
+              language(guild.lg, 'command_favorite_selectNumber'),
+          );
         };
         if (!user.musicFavorite) user.musicFavorite = {};
         if (!Object.keys(user.musicFavorite)[query.join('')-1]) {
-          return message.channel.send('Please select a valid number');
+          return message.channel.send(
+              language(guild.lg, 'command_favorite_selectValidNumber'),
+          );
         };
         delete user.musicFavorite[
             Object.keys(user.musicFavorite)[query.join('')-1]];
@@ -118,7 +136,7 @@ class Favorite extends Command {
         message.channel.send({
           embed: {
             color: '#2F3136',
-            title: 'your favorite list',
+            title: language(guild.lg, 'command_favorite_save_embed_title'),
             description: 'arguments: `save`, `play`, `vue`, `delete`\n\n'+
                `${Object.keys(user.musicFavorite).map((v, i) =>
                  `[${i+1}] ${v}`).join('\n')}`,
@@ -127,11 +145,15 @@ class Favorite extends Command {
         break;
       case 'play':
         if (!query.join('')) {
-          return message.channel.send('Please select a number');
+          return message.channel.send(
+              language(guild.lg, 'command_favorite_selectNumber'),
+          );
         };
         if (!user.musicFavorite) user.musicFavorite = {};
         if (!Object.keys(user.musicFavorite)[query.join('')-1]) {
-          return message.channel.send('Please select a valid number');
+          return message.channel.send(
+              language(guild.lg, 'command_favorite_selectValidNumber'),
+          );
         };
         // eslint-disable-next-line max-len
         user = await player.updateQueue(user.musicFavorite[Object.keys(user.musicFavorite)[query.join('')-1]], message);
@@ -149,7 +171,7 @@ class Favorite extends Command {
           message.channel.send({
             embed: {
               color: '#2F3136',
-              title: 'no favorites',
+              title: language(guild.lg, 'command_favorite_noFavorite'),
               description: 'arguments: `save`, `play`, `vue`, `delete`',
             },
           });
@@ -157,7 +179,7 @@ class Favorite extends Command {
           message.channel.send({
             embed: {
               color: '#2F3136',
-              title: 'your favorite list',
+              title: language(guild.lg, 'command_favorite_default_embed_title'),
               description: 'arguments: `save`, `play`, `vue`, `delete`\n\n'+
                `${Object.keys(user.musicFavorite).map((v, i) =>
                  `[${i+1}] ${v}`).join('\n')}`,

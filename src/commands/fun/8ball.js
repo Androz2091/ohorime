@@ -16,7 +16,7 @@ class EightBall extends Command {
       name: '8ball',
       category: 'fun',
       description: 'command_8ball_description',
-      usage: 'ping',
+      usage: '8ball [question]',
       nsfw: false,
       enable: true,
       guildOnly: false,

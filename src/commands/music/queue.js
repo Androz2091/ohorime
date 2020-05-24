@@ -45,7 +45,8 @@ class Queue extends Command {
       return message.channel.send({
         embed: {
           color: '#2F3136',
-          title: language(guild.lg, 'command_music_queue'),
+          title: language(guild.lg, 'command_queue_select')
+              .replace(/{{emote}}+/g, this.client.config.emote.no.id),
           description: `arguments: \`clear [all or number]\`\n\n`+
           `${guild.player_history.map((v, i) =>
             `[${i+1}] ${v.snippet.title}`).join('\n')}`,
@@ -55,7 +56,9 @@ class Queue extends Command {
     const act = query.shift();
     if (act !== 'clear') {
       // eslint-disable-next-line max-len
-      return message.channel.send(`${this.client.config.emote.no.id} Please select \`clear\` for arguments`);
+      return message.channel.send(
+          language(guild.lg, 'command_queue_select'),
+      );
     };
     if (query.join('') === 'all') {
       guild.player_history = [];
@@ -67,7 +70,10 @@ class Queue extends Command {
       return message.react(this.client.config.emote.yes.snowflake);
     } else {
       // eslint-disable-next-line max-len
-      return message.channel.send(`${this.client.config.emote.no.id} Please choose between \`all\` or a \`number\``);
+      return message.channel.send(
+          language(guild.lg, 'command_queue_choose')
+              .replace(/{{emote}}+/g, this.client.config.emote.no.id),
+      );
     }
   };
 };

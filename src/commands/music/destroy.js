@@ -1,5 +1,6 @@
 'use strict';
 const Command = require('../../plugin/Command');
+const language = require('../../translate');
 
 /**
  * Command class
@@ -32,14 +33,20 @@ class Destroy extends Command {
    */
   async launch(message, query, {guild}) {
     if (!this.client.music[message.guild.id]) {
-      return message.channel.send(`Aucune musique est initié`);
+      return message.channel.send(
+          language(guild.lg, 'command_destroy_noInit'),
+      );
     };
     if (!this.client.music[message.guild.id].dispatcher) {
-      return message.channel.send('Je ne joue pas de musique');
+      return message.channel.send(
+          language(guild.lg, 'command_destroy_noPlaying'),
+      );
     };
     const player = new (require('./play'))(this.client);
     if (!player.hasPermission(message)) {
-      return message.channel.send('You do not have permission');
+      return message.channel.send(
+          language(guild.lg, 'command_destroy_noPerm'),
+      );
     };
     await this.client.music[message.guild.id].dispatcher.destroy();
     this.client.music[message.guild.id].dispatcher = null;

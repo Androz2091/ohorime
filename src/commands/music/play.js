@@ -46,13 +46,17 @@ class Play extends Command {
     this.initQueue(this.client.music, message.guild.id);
     if (!message.guild.me.voice.channel) {
       if (!message.member.voice.channel) {
-        return message.channel.send('Vous devez rejoindre le salon avant');
+        return message.channel.send(
+            language(guild.lg, 'command_music_userNoJoin'),
+        );
       };
       if (this.hasPermission(message)) {
         this.client.music[message.guild.id].connection =
           await message.member.voice.channel.join();
       } else {
-        return message.reply('Vous ne pouvez pas ajouter le bot en vocal');
+        return message.reply(
+            language(guild.lg, 'command_music_noPermissions'),
+        );
       };
     } else {
       if (!this.client.music[message.guild.id].connection) {
@@ -196,7 +200,7 @@ class Play extends Command {
         .dispatcher.on('finish', async () => {
           guild = await this.client.getGuild(message.guild);
           this.client.music[message.guild.id].dispatcher = null;
-          if (guild.player.loop === 'off' &&
+          if (guild.player_loop === 'off' &&
   guild.player_history.length !== 0) {
             guild.player_history.shift();
             guild = await this.updateQueue(guild.player_history, message);
@@ -207,7 +211,7 @@ class Play extends Command {
             };
             this.client.music[message.guild.id].index = 0;
             this.play(message, guild);
-          } else if (guild.player.loop === 'on') {
+          } else if (guild.player_loop === 'on') {
             if (this.client.music[message.guild.id].index ===
     guild.player_history.length - 1) {
               this.client.music[message.guild.id].index = 0;
@@ -215,7 +219,7 @@ class Play extends Command {
               this.client.music[message.guild.id].index++;
             };
             this.play(message, guild);
-          } else if (guild.player.loop === 'once') {
+          } else if (guild.player_loop === 'once') {
             this.play(message, guild);
             this.client.music[message.guild.id].index =
               this.client.music[message.guild.id].index;
@@ -284,7 +288,7 @@ class Play extends Command {
     if (message.member.hasPermission(['ADMINISTRATOR'],
         {checkAdmin: true, checkOwner: true})) return true;
     if (message.member.roles.cache.some((r) => r.name === 'dj')) return true;
-    if (message.guild.me.voice.channel.members.size < 2) return true;
+    if (message.guild.me.voice.channel.members.size <= 2) return true;
     return false;
   }
 };

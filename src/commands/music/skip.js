@@ -43,7 +43,9 @@ class Skip extends Command {
     };
     const player = new (require('./play'))(this.client);
     if (!player.hasPermission(message)) {
-      return message.channel.send('You do not have permission');
+      return message.channel.send(
+          language(guild.lg, 'command_skip_noPermission'),
+      );
     };
     if (this.client.music[message.guild.id].broadcast) {
       return message.reply('⚠️');

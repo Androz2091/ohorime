@@ -43,7 +43,9 @@ class Volume extends Command {
     };
     const player = new (require('./play'))(this.client);
     if (!player.hasPermission(message)) {
-      return message.channel.send('You do not have permission');
+      return message.channel.send(
+          language(guild.lg, 'command_volume_noPermission'),
+      );
     };
     if (isNaN(query[0])) {
       return message.reply(
@@ -51,14 +53,10 @@ class Volume extends Command {
       );
     };
     if (query[1] !== 'boost') {
-      if (query[0] > 100) {
-        return message
-            // eslint-disable-next-line max-len
-            .reply(`Please use boost argument: \`${guild.prefix}volume ${query[0]} boost\``);
-      } else if (query[0] < 1) {
-        return message
-            // eslint-disable-next-line max-len
-            .reply(`Please use boost argument: \`${guild.prefix}volume ${query[0]} boost\``);
+      if (query[0] > 100 && query[0] < 1) {
+        return message.reply(
+            language(guild.lg, 'command_volume_useboost'),
+        );
       };
     };
     guild.player_volume = query[0];

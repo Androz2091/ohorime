@@ -35,13 +35,17 @@ class Kpop extends Command {
     player.initQueue(this.client.music, message.guild.id);
     if (!message.guild.me.voice.channel) {
       if (!message.member.voice.channel) {
-        return message.channel.send('Vous devez rejoindre le salon avant');
+        return message.channel.send(
+            language(guild.lg, 'command_kpop_requireJoin'),
+        );
       };
       if (player.hasPermission(message)) {
         this.client.music[message.guild.id].connection =
           await message.member.voice.channel.join();
       } else {
-        return message.reply('Vous ne pouvez pas ajouter le bot en vocal');
+        return message.reply(
+            language(guild.lg, 'command_kpop_missingPermission'),
+        );
       };
     } else {
       if (!this.client.music[message.guild.id].connection) {

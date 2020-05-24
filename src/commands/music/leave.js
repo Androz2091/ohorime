@@ -38,7 +38,9 @@ class Leave extends Command {
   async launch(message, query, {guild}) {
     const player = new (require('./play'))(this.client);
     if (!player.hasPermission(message)) {
-      return message.channel.send('You do not have permission');
+      return message.channel.send(
+          language(guild.lg, 'command_leave_noPerm'),
+      );
     };
     if (this.client.music[message.guild.id].dispatcher) {
       this.client.music[message.guild.id].dispatcher.destroy();

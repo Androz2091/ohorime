@@ -39,9 +39,13 @@ class Loop extends Command {
     const player = new (require('./play'))(this.client);
     await player.initQueue(this.client.music, message.guild.id);
     if (this.client.music[message.guild.id].broadcast) {
-      return message.reply('Vous ne pouvez pas répéter une radio');
+      return message.reply(
+          language(guild.lg, 'command_loop_repeat_radio'),
+      );
     } else if (!this.client.music[message.guild.id].dispatcher) {
-      return message.reply('Je ne joue pas de musique');
+      return message.reply(
+          language(guild.lg, 'command_loop_noPlaying'),
+      );
     };
     switch (query.join('')) {
       case 'off':

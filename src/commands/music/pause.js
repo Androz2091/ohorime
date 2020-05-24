@@ -43,10 +43,14 @@ class Pause extends Command {
     };
     const player = new (require('./play'))(this.client);
     if (!player.hasPermission(message)) {
-      return message.channel.send('You do not have permission');
+      return message.channel.send(
+          language(guild.lg, 'command_pause_noPermission'),
+      );
     };
     if (joining === 'PLAYING') {
-      return message.channel.send('Vous ne pouvez pas coupé la musique');
+      return message.channel.send(
+          language(guild.lg, 'command_pause_noCutMusic'),
+      );
     };
     if (this.client.music[message.guild.id].broadcast) {
       return message.reply('⚠️');

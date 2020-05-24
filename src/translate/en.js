@@ -4,18 +4,7 @@ module.exports = {
     return this.data[lg];
   },
   data: {
-    'command_not_found': 'This command does not exist',
     'command_ping_description': 'Displays bot pings',
-    'value_not_found': 'You must enter a value',
-    'command_config_description': 'Configure the bot by adding to the guild',
-    'command_config_title': 'Control panel, prefix: {{prefix}}',
-    'command_config_description':
-      'Here is the bot configuration for your server',
-    'command_config_keyNotMatch':
-      // eslint-disable-next-line max-len
-      '**{{key}}** is not a configuration item, please write it correctly using capital letters',
-    'command_config_listSetting': 'here is a list of settings: `{{key}}`',
-    'command_config_successUpdate': 'Modification successful -> {{map}}',
     'command_ban_description': 'Ban a member from the server',
     'command_ban_invalidPosition':
       'You are not in the ban position of this user',
@@ -25,6 +14,7 @@ module.exports = {
     'command_kick_description': 'Kick a member from the server',
     'command_kick_invalidPosition':
       'You are not in the Kick position of this user',
+    'value_not_found': '',
     'command_kick_MeInvalidePosition': 'I am not able to Kick this user',
     'command_kick_success': 'User has been Kicked',
     'command_kick_error': 'I couldn\'t Kick this user',
@@ -44,6 +34,7 @@ module.exports = {
     'commande_music_played': 'I played now',
     'commande_music_not_played': 'I not played now',
     'command_music_matchChannel': 'I\'m already in your voice room',
+    'command_music_noPermissions': 'You cannot add the bot by voice',
     'command_nsfw_not_authorized':
       'You must be in an nsfw salon to execute this command',
     'command_dm_not_authorized':
@@ -128,26 +119,46 @@ module.exports = {
     'command_music_queue': 'Here is your playlist',
     'command_volume_defined': 'The volume is set to {{volume}}%',
     'command_img_notShow': 'The image is not displayed? click here.',
-    'custom_channel_welcome': 'Welcome {{name} in {{guild}}',
-    'custom_channel_goodbye': '{{name}} left us',
-    'world_prefix': 'prefix',
-    'world_language': 'language',
-    'world_color': 'color',
-    'world_channel': 'channel',
-    'world_welcome': 'welcome',
-    'world_goodbye': 'goodbye',
-    'world_active': 'active',
-    'world_command': 'commands',
     'member_missing_permission': 'You do not have the necessary permissions',
     'member_not_found': 'I cannot find the member in the server',
     'client_missing_permissions':
       // eslint-disable-next-line max-len
       'I don\'t have the necessary permissions.\nList of required permissions -> {{map}}',
-    'value_is_not_a_number':
-      'You must enter a number',
-    'value_is_less_than_zero':
-      'You must enter a number greater than zero',
-    'value_is_greater_than_a_hundred':
-      'You must enter a number less than a hundred',
+    'command_queue_select': '{{emote}} Please select \`clear\` for arguments',
+    'command_queue_choose':
+      '{{emote}} Please choose between \`all\` or a \`number\`',
+    'command_destroy_noInit': 'No music initiated',
+    'command_destroy_noPlaying': 'I not played now',
+    'command_destroy_noPerm': 'You do not have permission',
+    'command_favorite_saving': 'Saving {{emote}}',
+    'command_favorite_noPlaylist': 'This playlist is empty',
+    'command_favorite_enterName':
+      'Please enter name, example: \`{{prefix}}favorite save myPlaylist\`',
+    'command_favorite_save_embed_title': 'your favorite list',
+    'command_favorite_successful': 'successful {{emote}}',
+    'command_favorite_failed': 'failed {{emote}}',
+    'command_favorite_nameUsed': 'The name is already in use',
+    'command_favorite_selectNumber': 'Please select a number',
+    'command_favorite_selectValidNumber': 'Please select a valid number',
+    'command_favorite_delete_embed_title': 'your favorite list',
+    'command_favorite_noFavorite': 'no favorites',
+    'command_favorite_default_embed_title': 'your favorite list',
+    'command_kpop_requireJoin': 'You must join the lounge before',
+    'command_kpop_missingPermission':
+      'You cannot add the bot by voice',
+    'command_jpop_requireJoin': 'You must join the lounge before',
+    'command_jpop_missingPermission':
+      'You cannot add the bot by voice',
+    'command_leave_noPerm': 'You do not have permission',
+    'command_loop_repeat_radio': 'You cannot repeat a radio',
+    'command_loop_noPlaying': 'I don\'t play music',
+    'command_pause_noPermission': 'You do not have permission',
+    'command_pause_noCutMusic': 'You can\'t cut the music',
+    'command_skip_noPermission': 'You do not have permission',
+    'command_skipto_noPermission': 'You do not have permission',
+    'value_is_not_a_number': 'value is not a number',
+    'command_volume_noPermission': 'You do not have permission',
+    'command_volume_useboost':
+      'Please use boost argument: \`{{prefix}}volume {{query}} boost\`',
   },
 };
