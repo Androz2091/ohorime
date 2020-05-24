@@ -1,12 +1,8 @@
 /* eslint-disable max-len */
 'use strict';
 
-const {parseHtml, reduceString} = require('./../function');
-const TurndownService = require('turndown');
-const turndownService = new TurndownService();
-
 /**
- * Event MessageReactionRemove
+ * Event MessageReactionAdd
  */
 class MessageReactionRemove {
   /**
@@ -72,21 +68,15 @@ class MessageReactionRemove {
                 title: data[this.anime[messageReaction.message.guild.id].pagination].romaji +
               '  -  ID: ' +
               data[this.anime[messageReaction.message.guild.id].pagination].id,
-                description:
-            reduceString(parseHtml(turndownService.turndown(data[
+                description: data[
                 // eslint-disable-next-line max-len
-                this.anime[messageReaction.message.guild.id].pagination].description || 'aucune donnée'))),
-                thumbnail: {
-                  // eslint-disable-next-line max-len
-                  url: data[this.anime[messageReaction.message.guild.id].pagination].affiche ?
-                encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].affiche) :
-                'https://cdn.anemy.fr/staff/affiche/SANS-IMAGE.png',
-                },
-                image: {
-                  url: data[this.anime[messageReaction.message.guild.id].pagination].image ?
-                encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].image) :
-                'https://cdn.anemy.fr/staff/affiche/SANS-IMAGE.png',
-                },
+                    this.anime[messageReaction.message.guild.id].pagination].description || 'aucune donnée',
+                thumbnail: data[this.anime[messageReaction.message.guild.id].pagination].affiche ?
+                  {url: encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].affiche)} :
+                  {},
+                image: data[this.anime[messageReaction.message.guild.id].pagination].image ?
+                  {url: encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].image)} :
+                  {},
                 fields: [
                   {
                     name: 'episodes',
@@ -186,13 +176,12 @@ class MessageReactionRemove {
               '  -  ID: ' +
               data[this.anime[messageReaction.message.guild.id].pagination].id + ' · ' +
               data[this.anime[messageReaction.message.guild.id].pagination].id_page.slice(1, data[this.anime[messageReaction.message.guild.id].pagination].id_page.length-1),
-                description:
-              reduceString(parseHtml(turndownService.turndown(data[
-                  this.anime[messageReaction.message.guild.id].pagination].biographie || 'aucune donnée'))),
+                description: data[
+                    this.anime[messageReaction.message.guild.id].pagination].biographie || 'aucune donnée',
                 thumbnail: {
-                  url: encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].image) ?
-                encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].image) :
-                'https://cdn.anemy.fr/staff/affiche/SANS-IMAGE.png',
+                  url: data[this.anime[messageReaction.message.guild.id].pagination].image ?
+                    encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].image) :
+                    'https://cdn.anemy.fr/staff/affiche/SANS-IMAGE.png',
                 },
                 fields: [
                   {
@@ -244,17 +233,15 @@ class MessageReactionRemove {
                 title: data[this.anime[messageReaction.message.guild.id].pagination].romaji +
               '  -  ID: ' +
               data[this.anime[messageReaction.message.guild.id].pagination].id,
-                description:
-              reduceString(parseHtml(turndownService.turndown(data[
-                  // eslint-disable-next-line max-len
-                  this.anime[messageReaction.message.guild.id].pagination].description || 'aucune donnée'))),
-                thumbnail: {
-                  // eslint-disable-next-line max-len
-                  url: encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].affiche) || null,
-                },
-                image: {
-                  url: encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].image) || null,
-                },
+                description: data[
+                    // eslint-disable-next-line max-len
+                    this.anime[messageReaction.message.guild.id].pagination].description || 'aucune donnée',
+                thumbnail: data[this.anime[messageReaction.message.guild.id].pagination].affiche ?
+                  {url: encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].affiche)} :
+                  {},
+                image: data[this.anime[messageReaction.message.guild.id].pagination].image ?
+                  {url: encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].image)} :
+                  {},
                 fields: [
                   {
                     name: 'episodes',
@@ -354,11 +341,12 @@ class MessageReactionRemove {
               '  -  ID: ' +
               data[this.anime[messageReaction.message.guild.id].pagination].id + ' · ' +
               data[this.anime[messageReaction.message.guild.id].pagination].id_page.slice(1, data[this.anime[messageReaction.message.guild.id].pagination].id_page.length-1),
-                description:
-              reduceString(parseHtml(turndownService.turndown(data[
-                  this.anime[messageReaction.message.guild.id].pagination].biographie || 'aucune donnée'))),
+                description: data[
+                    this.anime[messageReaction.message.guild.id].pagination].biographie || 'aucune donnée',
                 thumbnail: {
-                  url: encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].image) || null,
+                  url: data[this.anime[messageReaction.message.guild.id].pagination].image ?
+                    encodeURI(data[this.anime[messageReaction.message.guild.id].pagination].image) :
+                    'https://cdn.anemy.fr/staff/affiche/SANS-IMAGE.png',
                 },
                 fields: [
                   {

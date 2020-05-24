@@ -42,7 +42,7 @@ class Favorite extends Command {
         const msgLoad =
           await message.channel.send(`saving ${
             this.client.config.emote.loading.id}`);
-        if (guild.player.history < 1) {
+        if (guild.player_history < 1) {
           msgLoad.edit(`failed ${
             this.client.config.emote.no.id
           }`);
@@ -57,7 +57,7 @@ class Favorite extends Command {
         };
         if (!user.musicFavorite) user.musicFavorite = {};
         if (!user.musicFavorite[query.join(' ')]) {
-          user.musicFavorite[query.join(' ')] = guild.player.history;
+          user.musicFavorite[query.join(' ')] = guild.player_history;
           await this.client.updateUser(message.author, {
             musicFavorite: user.musicFavorite,
           });
@@ -86,16 +86,16 @@ class Favorite extends Command {
         if (!index) {
           return message.channel.send('Please select a number');
         };
-        if (!guild.player.favorite) guild.player.favorite = {};
-        if (!Object.keys(guild.player.favorite)[index-1]) {
+        if (!user.musicFavorite) user.musicFavorite = {};
+        if (!Object.keys(user.musicFavorite)[index-1]) {
           return message.channel.send('Please select a valid number');
         };
         return message.channel.send({
           embed: {
             color: '#2F3136',
-            title: `${Object.keys(guild.player.favorite)[index-1]} playlist`,
+            title: `${Object.keys(user.musicFavorite)[index-1]} playlist`,
             description: `${
-              guild.player.favorite[Object.keys(guild.player.favorite)[index-1]]
+              user.musicFavorite[Object.keys(user.musicFavorite)[index-1]]
                   .map((v, i) =>
                     `[${i+1}] ${v.snippet.title}`).join('\n')}`,
           },
@@ -105,14 +105,14 @@ class Favorite extends Command {
         if (!query.join('')) {
           return message.channel.send('Please select a number');
         };
-        if (!guild.player.favorite) guild.player.favorite = {};
-        if (!Object.keys(guild.player.favorite)[query.join('')-1]) {
+        if (!user.musicFavorite) user.musicFavorite = {};
+        if (!Object.keys(user.musicFavorite)[query.join('')-1]) {
           return message.channel.send('Please select a valid number');
         };
-        delete guild.player.favorite[
-            Object.keys(guild.player.favorite)[query.join('')-1]];
+        delete user.musicFavorite[
+            Object.keys(user.musicFavorite)[query.join('')-1]];
         await this.client.updateUser(message.author, {
-          player: guild.player.guild.player.favorite,
+          musicFavorite: user.musicFavorite,
         });
         user = await this.client.getUser(message.author);
         message.channel.send({
@@ -120,7 +120,7 @@ class Favorite extends Command {
             color: '#2F3136',
             title: 'your favorite list',
             description: 'arguments: `save`, `play`, `vue`, `delete`\n\n'+
-               `${Object.keys(guild.player.favorite).map((v, i) =>
+               `${Object.keys(user.musicFavorite).map((v, i) =>
                  `[${i+1}] ${v}`).join('\n')}`,
           },
         });
@@ -129,12 +129,12 @@ class Favorite extends Command {
         if (!query.join('')) {
           return message.channel.send('Please select a number');
         };
-        if (!guild.player.favorite) guild.player.favorite = {};
-        if (!Object.keys(guild.player.favorite)[query.join('')-1]) {
+        if (!user.musicFavorite) user.musicFavorite = {};
+        if (!Object.keys(user.musicFavorite)[query.join('')-1]) {
           return message.channel.send('Please select a valid number');
         };
         // eslint-disable-next-line max-len
-        guild = await player.updateQueue(guild.player.favorite[Object.keys(guild.player.favorite)[query.join('')-1]], message);
+        user = await player.updateQueue(user.musicFavorite[Object.keys(user.musicFavorite)[query.join('')-1]], message);
         this.client.music[message.guild.id].index = 0;
         if (player.hasPermission(message)) {
           if (!client.music[message.guild.id].connection) {
@@ -145,7 +145,7 @@ class Favorite extends Command {
         player.play(message, guild);
         break;
       default:
-        if (!guild.player.favorite || Object.keys(guild.player.favorite) < 1) {
+        if (!user.musicFavorite || Object.keys(user.musicFavorite) < 1) {
           message.channel.send({
             embed: {
               color: '#2F3136',
@@ -159,7 +159,7 @@ class Favorite extends Command {
               color: '#2F3136',
               title: 'your favorite list',
               description: 'arguments: `save`, `play`, `vue`, `delete`\n\n'+
-               `${Object.keys(guild.player.favorite).map((v, i) =>
+               `${Object.keys(user.musicFavorite).map((v, i) =>
                  `[${i+1}] ${v}`).join('\n')}`,
             },
           });

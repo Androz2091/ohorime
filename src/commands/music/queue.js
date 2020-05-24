@@ -37,7 +37,7 @@ class Queue extends Command {
    * @return {Message}
    */
   async launch(message, query, {guild}) {
-    if (!guild.player.history || guild.player.history.length < 1) {
+    if (!guild.player_history || guild.player_history.length < 1) {
       return message.channel.send(language(guild.lg, 'command_music_notQueue'));
     };
     const player = new (require('./play'))(this.client);
@@ -47,7 +47,7 @@ class Queue extends Command {
           color: '#2F3136',
           title: language(guild.lg, 'command_music_queue'),
           description: `arguments: \`clear [all or number]\`\n\n`+
-          `${guild.player.history.map((v, i) =>
+          `${guild.player_history.map((v, i) =>
             `[${i+1}] ${v.snippet.title}`).join('\n')}`,
         },
       });
@@ -58,12 +58,12 @@ class Queue extends Command {
       return message.channel.send(`${this.client.config.emote.no.id} Please select \`clear\` for arguments`);
     };
     if (query.join('') === 'all') {
-      guild.player.history = [];
-      guild = await player.updateQueue(guild.player, message);
+      guild.player_history = [];
+      guild = await player.updateQueue(guild.player_history, message);
       return message.react(this.client.config.emote.yes.snowflake);
-    } else if (guild.player.history[query.join('')-1]) {
-      guild.player.history.splice(query.join('')-1, 1);
-      guild = await player.updateQueue(guild.player.history, message);
+    } else if (guild.player_history[query.join('')-1]) {
+      guild.player_history.splice(query.join('')-1, 1);
+      guild = await player.updateQueue(guild.player_history, message);
       return message.react(this.client.config.emote.yes.snowflake);
     } else {
       // eslint-disable-next-line max-len

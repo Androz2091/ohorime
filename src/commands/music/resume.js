@@ -42,9 +42,8 @@ class Resume extends Command {
       return message.reply(language(guild.lg, 'command_music_notPlaying'));
     };
     const player = new (require('./play'))(this.client);
-    const joining = await player.join(message);
-    if (joining === 'PLAYING') {
-      return message.channel.send('Vous ne pouvez pas coupé la musique');
+    if (!player.hasPermission(message)) {
+      return message.channel.send('You do not have permission');
     };
     if (this.client.music[message.guild.id].broadcast) {
       return message.reply('⚠️');

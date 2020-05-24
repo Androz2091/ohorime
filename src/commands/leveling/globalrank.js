@@ -7,42 +7,38 @@ const {MessageAttachment} = require('discord.js');
 
 /**
  * Get algorithme
- * @param {number} xp
+ * @param {number} messages
  * @return {object}
  */
-function calculatePoint(xp) {
+function calculatepoint(messages) {
   const algos = {
-    messages: xp,
+    messages,
   };
-  algos.xp = algos.messages/1.75;
-  algos.base = 100;
-  algos.difficulty = 1.5;
-  algos.level = Math.round(algos.xp/algos.base/algos.difficulty);
-  algos.xpForNextLvl = algos.level === 0 ?
-      (algos.level+1)*algos.base*algos.difficulty :
-      (algos.level)*algos.base*algos.difficulty;
-  algos.advancement = algos.xp / algos.xpForNextLvl;
-  algos.advancementPercent = (algos.xp / algos.xpForNextLvl)*100;
+  algos.xp = algos.messages/1.25;
+  algos.difficulty = 1.75;
+  algos.base = 100*algos.difficulty;
+  algos.level = Math.ceil((algos.difficulty*algos.xp)/(algos.difficulty*algos.base));
+  algos.ratio = (algos.difficulty*algos.xp)/((algos.difficulty*algos.base)*algos.level)
   return algos;
 };
 
 /**
  * Command class
  */
-class Rank extends Command {
+class GlobalRank extends Command {
   /**
    * @param {Client} client - Client
    */
   constructor(client) {
     super(client, {
-      name: 'rank',
+      name: 'globalrank',
       category: 'leveling',
-      description: 'command_rank_description',
+      description: 'command_globalrank_description',
       usage: 'rank',
       nsfw: false,
       enable: true,
       guildOnly: false,
-      aliases: [],
+      aliases: ['grank'],
       mePerm: ['EMBED_LINKS'],
     });
     this.client = client;
@@ -73,11 +69,10 @@ class Rank extends Command {
     const name = member.displayName.length > 20 ?
       member.displayName.substring(0, 17) + '...' : member.displayName;
 
-    var guildUser = guild.users.find((user) => user.user === String(message.author.id));
-    const point = calculatePoint(guildUser.messages.length);
+    const point = calculatepoint(user.messageCount);
 
     const avatar = await loadImage(member.user.displayAvatarURL({ format: 'jpg' }));
-    const background = await loadImage(`http://localhost:8030/image/_store/${user.banner.id}.${
+    const background = await loadImage(`https://cdn.ohori.me/store/${user.banner.id}.${
       user.banner.extension.includes('png') ?
       user.banner.extension[user.banner.extension.findIndex((e) => e === 'png')] :
       user.banner.extension[user.banner.extension.findIndex((e) => e === 'jpg')]
@@ -110,10 +105,10 @@ class Rank extends Command {
         .setTextAlign('left')
         .addText(`Score: ${Math.round(point.xp.toLocaleString())}`, 241, 136)
         .toBuffer();
-    const fileName = `rank-${message.author.id}.png`;
+    const fileName = `globalRank-${message.author.id}.png`;
     const attachment = new MessageAttachment(buffer, fileName);
     await message.channel.send({files: [attachment]});
   };
 };
 
-module.exports = Rank;
+module.exports = GlobalRank;

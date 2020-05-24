@@ -4,7 +4,7 @@ const {DISCORD_TOKEN: token} = require('./configuration');
 
 const manager = new ShardingManager('./src/app.js', {
   token: token,
-  totalShards: 2,
+  totalShards: 'auto',
   shardList: 'auto',
   mode: 'process',
   respawn: true,

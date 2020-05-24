@@ -14,7 +14,7 @@ class GuildMemberRemove {
      */
     this.coreExchange.emit('memberCount',
         // eslint-disable-next-line max-len
-        await client.shard.broadcastEval('this.guilds.cache.reduce((prev, guild) => prev + guild.memberCount, 0)')
+        await this.shard.broadcastEval('this.guilds.cache.reduce((prev, guild) => prev + guild.memberCount, 0)')
             .then((results) =>
               results.reduce((prev, memberCount) => prev + memberCount, 0),
             ));

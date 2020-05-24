@@ -17,39 +17,37 @@ const guildShema = {
       extension: ['webp', 'png'],
     },
   },
-  welcome: {
-    'type': Object,
-    'default': {
-      banner: String,
-      channel: null,
-      active: false,
-    },
+  welcome_banner: String,
+  welcome_channel: String,
+  welvome_active: {
+    'type': Boolean,
+    'default': false,
   },
-  goodbye: {
-    'type': Object,
-    'default': {
-      banner: String,
-      channel: null,
-      avtive: false,
-    },
+  goodbye_banner: String,
+  goodbye_channel: String,
+  goodbye_active: {
+    'type': Boolean,
+    'default': false,
   },
-  player: {
-    'type': Object,
-    'default': {
-      history: Array,
-      volume: 50,
-      loop: 'off',
-      muteIndicator: false,
-    },
+  player_history: Array,
+  player_volume: {
+    'type': Number,
+    'default': 50,
   },
-  mute: {
-    'type': Object,
-    'default': {
-      role: null,
-      affectVocal: false,
-      channels: Map,
-    },
+  player_loop: {
+    'type': String,
+    'default': 'off',
   },
+  player_muteIndicator: {
+    'type': Boolean,
+    'default': false,
+  },
+  mute_role: String,
+  mute_affectVocal: {
+    'type': Boolean,
+    'default': false,
+  },
+  mute_channels: Object,
   messageCount: {
     'type': Number,
     'default': 0,

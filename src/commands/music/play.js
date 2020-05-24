@@ -108,16 +108,13 @@ class Play extends Command {
         msg.delete();
         msgCollected.delete();
         const info = await ytdl.getBasicInfo(`https://www.youtube.com/watch?v=${song.id.videoId}`);
-        console.log(JSON.parse(JSON.stringify(info)).length_seconds);
         song.time = JSON.parse(JSON.stringify(info)).length_seconds*1000;
         song.request = message.member;
-        if (!guild.player.history) guild.player.history = [];
-        guild.player.history.push(song);
+        if (!guild.player_history) guild.player_history = [];
+        guild.player_history.push(song);
         this.client.music[message.guild.id].type = 'player';
-        console.log(guild);
-        guild = await this.updateQueue(guild.player, message);
-        console.log(guild);
-        if (guild.player.history.length > 1) {
+        guild = await this.updateQueue(guild.player_history, message);
+        if (guild.player_history.length > 1) {
           message.channel.send({embed: {
             color: '#2F3136',
             title: 'Ajout à la playlist',
@@ -131,7 +128,7 @@ class Play extends Command {
             this.play(message);
           }
         } else {
-          if (guild.player.history <= 1) {
+          if (guild.player_history <= 1) {
             this.client.music[message.guild.id].index = 0;
           };
           this.play(message, guild);
@@ -152,42 +149,41 @@ class Play extends Command {
    * play song
    * @param {Message} message - message
    * @param {Object} guild - guild data
-   * @param {Number} seek
    * @return {*}
    */
-  async play(message, guild, seek = 0) {
+  async play(message, guild) {
     guild = await this.client.getGuild(message.guild);
-    if (!guild.player.history || guild.player.history.length < 1) {
+    if (!guild.player_history || guild.player_history.length < 1) {
       return message.channel.send(
           language(guild.lg, 'command_music_notQueue'),
       );
     };
     this.client.music[message.guild.id].dispatcher =
     this.client.music[message.guild.id].connection.play(
-        await ytdl(`https://www.youtube.com/watch?v=${guild.player.history[this.client.music[message.guild.id].index].id.videoId}`, {
+        await ytdl(`https://www.youtube.com/watch?v=${guild.player_history[this.client.music[message.guild.id].index].id.videoId}`, {
           filter: 'audioonly',
           highWaterMark: 20,
           quality: 'highestaudio',
         }, {
-          volume: guild.player.volume/100,
+          volume: guild.player_volume/100,
           fec: true,
           bitrate: 96,
           highWaterMark: 20,
-          seek,
+          seek: 0,
         }),
     );
     this.client.music[message.guild.id].connection.voice.setSelfDeaf(true);
     this.client.music[message.guild.id].connection.voice.setSelfMute(false);
     this.client.music[message.guild.id].broadcast = false;
-    if (!guild.player.muteIndicator) {
+    if (!guild.player_muteIndicator) {
       message.channel.send({
         embed: {
           color: '#2F3136',
           title: language(guild.lg, 'commande_music_played'),
-          description: guild.player.history[
+          description: guild.player_history[
               this.client.music[message.guild.id].index].snippet.title,
           thumbnail: {
-            url: guild.player.history[
+            url: guild.player_history[
                 this.client.music[
                     message.guild.id].index].snippet.thumbnails.default.url,
           },
@@ -198,14 +194,13 @@ class Play extends Command {
     };
     this.client.music[message.guild.id]
         .dispatcher.on('finish', async () => {
-          console.log('finish');
           guild = await this.client.getGuild(message.guild);
           this.client.music[message.guild.id].dispatcher = null;
           if (guild.player.loop === 'off' &&
-  guild.player.history.length !== 0) {
-            guild.player.history.shift();
-            guild = await this.updateQueue(guild.player.history, message);
-            if (guild.player.history.length === 0) {
+  guild.player_history.length !== 0) {
+            guild.player_history.shift();
+            guild = await this.updateQueue(guild.player_history, message);
+            if (guild.player_history.length === 0) {
               return message.channel.send(
                   language(guild.lg, 'command_music_finish'),
               );
@@ -214,7 +209,7 @@ class Play extends Command {
             this.play(message, guild);
           } else if (guild.player.loop === 'on') {
             if (this.client.music[message.guild.id].index ===
-    guild.player.history.length - 1) {
+    guild.player_history.length - 1) {
               this.client.music[message.guild.id].index = 0;
             } else {
               this.client.music[message.guild.id].index++;
@@ -242,13 +237,13 @@ class Play extends Command {
   };
   /**
    * Add song in Queue
-   * @param {Object} player - player
+   * @param {Object} queue - player
    * @param {Message} message - message
    * @return {Promise<Object>}
    */
-  async updateQueue(player, message) {
+  async updateQueue(queue, message) {
     await this.client.updateGuild(message.guild, {
-      player,
+      player_history: queue,
     });
     return await this.client.getGuild(message.guild);
   };

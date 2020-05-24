@@ -130,7 +130,7 @@ class Message {
        */
       guild = {
         lg: 'en',
-        color: this.client.config.color,
+        color: this.config.color,
       };
     };
     /**
@@ -217,17 +217,7 @@ class Message {
     if (!cmd.conf.enable && !cmd.bypass) {
       return message.reply(language(guild.lg, 'command_disable'));
     };
-    try {
-      /** Execute command */
-      cmd.launch(message, query, {user, guild});
-    } catch (error) {
-      console.warn(error);
-      if (!client.ws.status) return;
-      const guild = client.guilds.get('612430086624247828');
-      if (!guild) return;
-      const channel = guild.channels.get('707414291355271220');
-      channel.send(error, {code: 'js'});
-    };
+    cmd.launch(message, query, {user, guild});
   };
 };
 

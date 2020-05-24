@@ -1,11 +1,12 @@
 'use strict';
 const {Client, Collection} = require('discord.js');
 const {readdirSync} = require('fs');
-const {DISCORD_TOKEN, CONFIG} = require('./../configuration');
+const {DISCORD_TOKEN, CONFIG, ANEMY} = require('./../configuration');
 const {JpopClient, KpopClient} = require('./client');
 const coreExchange = new (require('./plugin/CoreExchange'))();
 const klaw = require('klaw');
 const {parse, sep} = require('path');
+const Anemy = require('node-anemy');
 
 /**
  * Class Akira exents Client
@@ -38,7 +39,12 @@ class AkiraClient extends Client {
     };
     this.anime = {};
     this.coreExchange = coreExchange;
-    this.s = {};
+    this.anemy = new Anemy({
+      token: ANEMY.TOKEN,
+      htmlEntitiesDecoder: true,
+      MarkdownEncoder: true,
+      setLimitString: 2000,
+    });
   };
   /**
   * Load events file
@@ -117,7 +123,6 @@ client.kpop.ws.on('event', (data) => client.kpop.data = data);
 client.kpop.ws.on('open', () => console.log('Kpop broadcast connected'));
 client.kpop.ws.on('close', () => console.log('Kpop broadcast disconnected'));
 
-client.on('debug', client.logger.debug);
 client.on('error', client.logger.error);
 
 process.on('uncaughtException', (error) => {

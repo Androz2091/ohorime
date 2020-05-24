@@ -42,9 +42,8 @@ class Volume extends Command {
       return message.reply(language(guild.lg, 'command_music_notPlaying'));
     };
     const player = new (require('./play'))(this.client);
-    const joining = await player.join(message);
-    if (joining === 'PLAYING') {
-      return message.channel.send('Vous ne pouvez pas coupé la musique');
+    if (!player.hasPermission(message)) {
+      return message.channel.send('You do not have permission');
     };
     if (isNaN(query[0])) {
       return message.reply(
@@ -53,18 +52,18 @@ class Volume extends Command {
     };
     if (query[1] !== 'boost') {
       if (query[0] > 100) {
-        return message.reply(
-            language(guild.lg, 'value_is_greater_than_a_hundred'),
-        );
+        return message
+            // eslint-disable-next-line max-len
+            .reply(`Please use boost argument: \`${guild.prefix}volume ${query[0]} boost\``);
       } else if (query[0] < 1) {
-        return message.reply(
-            language(guild.lg, 'value_is_less_than_zero'),
-        );
+        return message
+            // eslint-disable-next-line max-len
+            .reply(`Please use boost argument: \`${guild.prefix}volume ${query[0]} boost\``);
       };
     };
-    guild.player.volume = query[0];
+    guild.player_volume = query[0];
     await this.client.updateGuild(message.guild, {
-      player: guild.player,
+      player_volume: guild.player_volume,
     });
     await this.client.music[message.guild.id].dispatcher
         .setVolume(query[0]/100);

@@ -45,43 +45,43 @@ class Loop extends Command {
     };
     switch (query.join('')) {
       case 'off':
-        guild.player.loop = 'off';
+        guild.player_loop = 'off';
         await this.client.updateGuild(message.guild, {
-          player: guild.player,
+          player_loop: guild.player_loop,
         });
         message.react('➡️');
         break;
       case 'on':
-        guild.player.loop = 'on';
+        guild.player_loop = 'on';
         await this.client.updateGuild(message.guild, {
-          player: guild.player,
+          player_loop: guild_player_loop,
         });
         message.react('🔁');
         break;
       case 'once':
-        guild.player.loop = 'once';
+        guild.player_loop = 'once';
         await this.client.updateGuild(message.guild, {
-          player: guild.player,
+          player_loop: guild_player,
         });
         message.react('🔂');
         break;
       default:
         if (guild.player.loop === 'off') {
-          guild.player.loop = 'on';
+          guild.player_loop = 'on';
           await this.client.updateGuild(message.guild, {
-            player: guild.player,
+            player_loop: guild_player,
           });
           message.react('🔁');
         } else if (guild.player.loop === 'on') {
-          guild.player.loop = 'once';
+          guild.player_loop = 'once';
           await this.client.updateGuild(message.guild, {
-            player: guild.player,
+            player_loop: guild.player_loop,
           });
           message.react('🔂');
         } else if (guild.player.loop === 'once') {
-          guild.player.loop = 'off';
+          guild.player_loop = 'off';
           await this.client.updateGuild(message.guild, {
-            player: guild.player,
+            player_loop: guild.player_loop,
           });
           message.react('➡️');
         };

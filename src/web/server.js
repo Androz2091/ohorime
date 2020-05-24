@@ -5,6 +5,7 @@ const app = express();
 const serializeJSON = require('../plugin/SerializeJSON');
 const {User, AuthUser} = require('./../database/lib');
 const axios = require('axios');
+const base64 = require('./../plugin/base64');
 
 module.exports = function(client) {
   client.site = require('http').createServer(app)
@@ -55,11 +56,12 @@ module.exports = function(client) {
     if (!users) return res.status(404).json({error: true, message: 'user not found'});
     return res.status(202).json(users);
   });
+
   app.post('/user/purchase', async (req, res) => {
     const user = await User.findOne({id: req.body.id});
     if (!user) return res.status(202).json({error: true, message: 'user not found'});
     if ((req.headers.authorization !== client.config.authorization)
-      && (req.headers.authorization !== await AuthUser.find({id: req.body.id}).token)) return res.status(403).json({error: true, message: 'authorization refused'});
+      && (req.headers.authorization !== await AuthUser.findOne({id: req.body.id}).token)) return res.status(403).json({error: true, message: 'authorization refused'});
     let store = await axios({url: 'https://cdn.ohori.me/store.json', method: 'GET', headers: {'Content-Type': 'application/json'}})
       .then(response => response.data).catch(e => e);
     store = serializeJSON(store['background']);
@@ -74,11 +76,12 @@ module.exports = function(client) {
       items: user.items,
     }).then(() => {return {error: false, message: 'OK'}}).catch((e) => {return {error: true, message: e.message}}));
   });
+
   app.post('/user/setbanner', async (req, res) => {
     const user = await User.findOne({id: req.body.id});
     if (!user) return res.status(404).json({error: true, message: 'user not found'});
     if ((req.headers.authorization !== client.config.authorization)
-      && (req.headers.authorization !== await AuthUser.find({id: req.body.id}).token)) return res.status(403).json({error: true, message: 'authorization refused'});
+      && (req.headers.authorization !== await AuthUser.findOne({id: req.body.id}).token)) return res.status(403).json({error: true, message: 'authorization refused'});
     if (!user.items.some(v => v.id === req.body.item)) return res.status(404).json({error: true, message: 'item not found'});
     const item = user.items.find(v => v.id === req.body.item);
     return res.status(202).json(await client.updateUser(user, {
@@ -87,5 +90,25 @@ module.exports = function(client) {
         extension: [item.extension, 'png'],
       },
     }).then(() => {return {error: false, message: 'OK'}}).catch((e) => {return {error: true, message: e.message}}));
+  });
+
+  app.post('/user/token', async (req, res) => {
+    const user = await User.findOne({id: req.body.id});
+    if (!user) return res.status(404).json({error: true, message: 'user not found'});
+    const auth = await AuthUser.findOne({id: req.body.id})
+    if ((req.headers.authorization !== client.config.authorization)
+      && (req.headers.authorization !== auth.token)) return res.status(403).json({error: true, message: 'authorization refused'});
+    return res.status(202).json({token: auth.token});
+  });
+
+  app.post('/user/refreshtoken', async (req, res) => {
+    const user = await User.findOne({id: req.body.id});
+    if (!user) return res.status(404).json({error: true, message: 'user not found'});
+    const auth = await AuthUser.findOne({id: req.body.id})
+    if ((req.headers.authorization !== client.config.authorization)
+      && (req.headers.authorization !== auth.token)) return res.status(403).json({error: true, message: 'authorization refused'});
+      return res.status(202).json(await client.updateAuthUser(user, {
+        token: `${base64(req.body.id)}.${base64(process.pid)}.${base64(Date.now())}`,
+      }).then(() => {return {error: false, message: 'OK', token: `${base64(req.body.id)}.${base64(process.pid)}.${base64(Date.now())}`}}).catch((e) => {return {error: true, message: e.message}}));
   });
 };

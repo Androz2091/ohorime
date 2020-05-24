@@ -37,10 +37,9 @@ class Destroy extends Command {
     if (!this.client.music[message.guild.id].dispatcher) {
       return message.channel.send('Je ne joue pas de musique');
     };
-    const player = new (require('../play'))(this.client);
-    const joining = await player.join(message);
-    if (joining === 'PLAYING') {
-      return message.channel.send('Vous ne pouvez pas coupé la musique');
+    const player = new (require('./play'))(this.client);
+    if (!player.hasPermission(message)) {
+      return message.channel.send('You do not have permission');
     };
     await this.client.music[message.guild.id].dispatcher.destroy();
     this.client.music[message.guild.id].dispatcher = null;

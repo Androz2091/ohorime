@@ -31,18 +31,24 @@ class Kpop extends Command {
    * @return {Message}
    */
   async launch(message, query, {guild}) {
-    const {initQueue, join} = new (require('./play'))(this.client);
-    const joining = await join(message);
-    if (joining === 'PLAYING' && message.member.voice.channel.id !==
-    message.guild.me.voice.channel.id) {
-      return message.reply(`Vous devez être dans le même salon que le bot ! ${
-        this.client.config.emote.no.id
-      }`);
-    } else if (joining === 'MEMBER_NOT_JOIN') {
-      // eslint-disable-next-line max-len
-      return message.reply(`Vous devez vous connectez à un salon vocal avant ! ${this.client.config.emote.no.id}`);
+    const player = new (require('./play'))(this.client);
+    player.initQueue(this.client.music, message.guild.id);
+    if (!message.guild.me.voice.channel) {
+      if (!message.member.voice.channel) {
+        return message.channel.send('Vous devez rejoindre le salon avant');
+      };
+      if (player.hasPermission(message)) {
+        this.client.music[message.guild.id].connection =
+          await message.member.voice.channel.join();
+      } else {
+        return message.reply('Vous ne pouvez pas ajouter le bot en vocal');
+      };
+    } else {
+      if (!this.client.music[message.guild.id].connection) {
+        this.client.music[message.guild.id].connection =
+          await message.member.voice.channel.join();
+      };
     };
-    await initQueue(this.client.music, message.guild.id);
     if (this.client.music[message.guild.id].dispatcher) {
       this.client.music[message.guild.id].dispatcher.destroy();
     };
@@ -52,6 +58,7 @@ class Kpop extends Command {
       await this.client.music[message.guild.id].connection
           .play(this.client.kpop.broadcast);
     this.client.music[message.guild.id].broadcast = true;
+    this.client.music[message.guild.id].type = 'kpop';
     return message.channel.send({embed: {
       color: '#2F3136',
       description: language(guild.lg,

@@ -42,9 +42,8 @@ class Skipto extends Command {
       return message.reply(language(guild.lg, 'command_music_notPlaying'));
     };
     const player = new (require('./play'))(this.client);
-    const joining = await player.join(message);
-    if (joining === 'PLAYING') {
-      return message.channel.send('Vous ne pouvez pas coupé la musique');
+    if (!player.hasPermission(message)) {
+      return message.channel.send('You do not have permission');
     };
     if (this.client.music[message.guild.id].broadcast) {
       return message.reply('⚠️');
@@ -54,17 +53,17 @@ class Skipto extends Command {
           language(guild.lg, 'value_is_not_a_number'),
       );
     };
-    if (query.join(' ') > guild.player.history-1) return message.react('💢');
-    switch (guild.player.loop) {
+    if (query.join(' ') > guild.player_history-1) return message.react('💢');
+    switch (guild.player_loop) {
       case 'off':
-        guild.player.history = guild.player.history.slice(query.join(' ')-1);
-        guild = await player.updateQueue(guild.player, message);
+        guild.player_history = guild.player_history.slice(query.join(' ')-1);
+        guild = await player.updateQueue(guild.player_history, message);
         this.client.music[message.guild.id].index = 0;
         player.play(message, guild);
         break;
       default:
         await this.client.music[message.guild.id].dispatcher.destroy();
-        guild = await player.updateQueue(guild.player, message);
+        guild = await player.updateQueue(guild.player_history, message);
         this.client.music[message.guild.id].index = query.join(' ')-1;
         player.play(message, guild);
         break;

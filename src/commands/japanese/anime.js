@@ -1,8 +1,6 @@
 /* eslint-disable */
 'use strict';
 const Command = require('../../plugin/Command');
-const {parseHtml, reduceString} = require('../../function');
-const getAnime = require('../../plugin/getAnime');
 
 /**
    * Command class
@@ -40,7 +38,7 @@ class Anime extends Command {
           title: 'Rechercher un animé',
           // eslint-disable-next-line max-len
           description: 'Voicie les différent parametre de recherche:\n`id`: [nombre],\n`name` [caractère],\n`épisode` [nomber]\n`days_starts` [nombre] c\'est le jour de début de diffusion de l\'anime,\n`months_starts` [nombre] c\'est le mois de début de diffusion de l\'anime,\n`years_starts` [nombre] c\'est l\'année de début de diffusion de l\'anime,\n`days_ends` [nombre] c\'est le jour de fin de diffusion de l\'anime,\n`months_ends` [nombre] c\'est le mois de fin de diffusion de l\'anime,\n`years_ends` [nombre] c\'est l\'année de fin de diffusion de l\'anime,\n`statut` [caractère] Terminé, Sortie en cours, Pas sortie, Annulé,\n`season` [caractère] Hiver 2019, Printemps 2019, Été 2019, Automne 2019, ... Et toutes les années possibles,\n`studio` [caractère],\n`source` [caractère],\n`duree` [nombre],\n`category` [caractère],\n`format` [caractère] Série TV, Film, OAV, ONA, Spécial, Musique,\n`country` [caractère] Japon, Chine, Corée du Sud, Taïwan, France, Autre,\n`adult` [nombre] 0 ou 1 (1 c\'est que l\'animé est +18 et 0 non !)\n\nexemple: `'+
-            guild.prefix + 'anime -format=Série TV`',
+            guild.prefix + 'anime -format Série TV`',
           footer: {
             text: 'Powered by Anemy',
             icon_url: 'https://gblobscdn.gitbook.com/spaces%2F-M4jTJ1TeTR2aTI4tuTG%2Favatar-1586713303918.png?generation=1586713304401821&alt=media',
@@ -48,38 +46,13 @@ class Anime extends Command {
         },
       });
     };
-    query = query.join(' ')
-        .replace('name', 'nom').replace('days_starts', 'date_debut1')
-        .replace('months_starts', 'date_debut2')
-        .replace('years_starts', 'date_debut2')
-        .replace('days_ends', 'date_fin1')
-        .replace('months_ends', 'date_fin2')
-        .replace('years_ends', 'date_fin3').replace('season', 'saison')
-        .replace('category', 'categorie').replace('contry', 'pays')
-        .replace('adult', 'adulte');
-    query = query.split(/-+/g);
-    query.shift();
+    let serialize = query.join(' ');
+    serialize = serialize.split(/-+/g);
+    serialize.shift();
     const mapping = [];
-    const container = [];
-    query.map((v) => mapping.push(v.split(/=/g)));
-    if (Object.keys(Object.fromEntries(mapping)).includes('id')) {
-      for (let key of mapping) {
-        key[0] = key[0].trim().toLowerCase();
-        key[1] = key[1];
-        container.push(key);
-      };
-    } else {
-      for (let key of mapping) {
-        key[0] = key[0].trim().toLowerCase();
-        key[1] = '%' + key[1] + '%';
-        container.push(key);
-      };
-    };
-    const obj = Object.fromEntries(container);
-    let pagination = true;
-    console.log(obj);
-    if (Object.keys(obj).length === 1 && Object.keys(obj).some(v => ['id'].includes(v))) pagination = false;
-    let data = await getAnime(obj, pagination);
+    serialize.map((v) => mapping.push([v.split(/ +/g).shift(), v.split(/ +/g).slice(1).join(' ')]));
+    const params = Object.fromEntries(mapping);
+    let data = await this.client.anemy.getAnime(params);
     if (!data) {
       return message.channel.send('Aucun résultat trouvé');
     };
@@ -106,19 +79,14 @@ class Anime extends Command {
       title: data[this.client.anime[message.guild.id].pagination].romaji +
         '  -  ID: ' +
         data[this.client.anime[message.guild.id].pagination].id,
-      description:
-        reduceString(parseHtml(turndownService.turndown(data[
-            this.client.anime[message.guild.id].pagination].description)))  || 'aucune donnée',
-      thumbnail: {
-        url: data[this.client.anime[message.guild.id].pagination].affiche ?
-        encodeURI(data[this.client.anime[message.guild.id].pagination].affiche) :
-        'https://cdn.anemy.fr/staff/affiche/SANS-IMAGE.png',
-      },
-      image: {
-        url: data[this.client.anime[message.guild.id].pagination].image ?
-        encodeURI(data[this.client.anime[message.guild.id].pagination].image) :
-        'https://cdn.anemy.fr/staff/affiche/SANS-IMAGE.png',
-      },
+      description: data[
+            this.client.anime[message.guild.id].pagination].description  || 'aucune donnée',
+      thumbnail: data[this.client.anime[message.guild.id].pagination].affiche ?
+        { url: encodeURI(data[this.client.anime[message.guild.id].pagination].affiche) } :
+        {},
+      image: data[this.client.anime[message.guild.id].pagination].image ?
+        { url: encodeURI(data[this.client.anime[message.guild.id].pagination].image) } :
+        {},
       fields: [
         {
           name: 'episodes',

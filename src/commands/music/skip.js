@@ -42,24 +42,23 @@ class Skip extends Command {
       return message.reply(language(guild.lg, 'command_music_notPlaying'));
     };
     const player = new (require('./play'))(this.client);
-    const joining = await player.join(message);
-    if (joining === 'PLAYING') {
-      return message.channel.send('Vous ne pouvez pas coupé la musique');
+    if (!player.hasPermission(message)) {
+      return message.channel.send('You do not have permission');
     };
     if (this.client.music[message.guild.id].broadcast) {
       return message.reply('⚠️');
     };
-    switch (guild.player.loop) {
+    switch (guild.player_loop) {
       case 'off':
-        guild.player.history.shift();
-        guild = await player.updateQueue(guild.player, message);
+        guild.player_history.shift();
+        guild = await player.updateQueue(guild.player_history, message);
         player.play(message, guild);
         break;
       default:
         await this.client.music[message.guild.id].dispatcher.destroy();
-        guild = await player.updateQueue(guild.player, message);
+        guild = await player.updateQueue(guild.player_history, message);
         if (this.client.music[message.guild.id].index ===
-            guild.player.history.length - 1) {
+            guild.player_history.length - 1) {
           this.client.music[message.guild.id].index = 0;
         } else {
           this.client.music[message.guild.id].index++;

@@ -37,12 +37,8 @@ class Leave extends Command {
    */
   async launch(message, query, {guild}) {
     const player = new (require('./play'))(this.client);
-    const joining = await player.join(message);
-    if (joining === 'PLAYING') {
-      return message.channel.send('Vous ne pouvez pas coupé la musique');
-    };
-    if (!this.client.music[message.guild.id]) {
-      return message.channel.send('Je ne suis pas dans un salon');
+    if (!player.hasPermission(message)) {
+      return message.channel.send('You do not have permission');
     };
     if (this.client.music[message.guild.id].dispatcher) {
       this.client.music[message.guild.id].dispatcher.destroy();

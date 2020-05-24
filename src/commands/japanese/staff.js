@@ -1,10 +1,6 @@
 /* eslint-disable */
 'use strict';
 const Command = require('../../plugin/Command');
-const {parseHtml, reduceString} = require('../../function');
-const getStaff = require('../../plugin/getStaff');
-const TurndownService = require('turndown');
-const turndownService = new TurndownService();
 
 /**
    * Command class
@@ -42,7 +38,7 @@ class Staff extends Command {
           title: 'Rechercher un staff',
           // eslint-disable-next-line max-len
           description: 'Voicie les différent parametre de recherche:\n`id`: [nombre],\n`id_page`: [caractère] Si vous voulez afficher les personnages de fiches différentes vous devez mettre les id comme cela 1,25,50,65,\n`prenom` [caractère],\n`nom` [caractère],\n`native` [caractère],\n`alternative`: [caractère]\n\nexemple: `'+
-            guild.prefix + 'personnage -prenom=Tatsuya`',
+            guild.prefix + 'personnage -prenom Tatsuya`',
           footer: {
             text: 'Powered by Anemy',
             icon_url: 'https://gblobscdn.gitbook.com/spaces%2F-M4jTJ1TeTR2aTI4tuTG%2Favatar-1586713303918.png?generation=1586713304401821&alt=media',
@@ -50,31 +46,13 @@ class Staff extends Command {
         },
       });
     };
-    query = query.join(' ');
-    query = query.split(/-+/g);
-    query.shift();
+    let serialize = query.join(' ');
+    serialize = serialize.split(/-+/g);
+    serialize.shift();
     const mapping = [];
-    const container = [];
-    if (query.length !== 1) {
-      query.map((v) => mapping.push(v.split(/=/g)));
-      for (const key of mapping) {
-        key[0] = key[0].trim().toLowerCase();
-        if (key[0] === 'id_page') {
-          key [1] = ',' + key[1] + ',';
-        };
-        key[1] = '%' + key[1] + '%';
-        container.push(key);
-      };
-    } else {
-      query.map((v) => mapping.push(v.split(/=/g)));
-      for (const key of mapping) {
-        container.push(key);
-      };
-    };
-    const obj = Object.fromEntries(container);
-    let pagination = true;
-    if (Object.keys(obj).length === 1 && Object.keys(obj).some((v) => ['id'].includes(v))) pagination = false;
-    let data = await getStaff(obj, pagination);
+    serialize.map((v) => mapping.push([v.split(/ +/g).shift(), v.split(/ +/g).slice(1).join(' ')]));
+    const params = Object.fromEntries(mapping);
+    let data = await this.client.anemy.getStaff(params);
     if (!data || data.length < 1) {
       return message.channel.send('Aucun résultat trouvé');
     };
@@ -100,14 +78,11 @@ class Staff extends Command {
               '  -  ID: ' +
               data[this.client.anime[message.guild.id].pagination].id + ' · ' +
               data[this.client.anime[message.guild.id].pagination].id_page.slice(1, data[this.client.anime[message.guild.id].pagination].id_page.length-1),
-            description:
-              reduceString(parseHtml(turndownService.turndown(data[
-                  this.client.anime[message.guild.id].pagination].biographie || 'aucune donnée'))),
-            thumbnail: {
-              url: data[this.client.anime[message.guild.id].pagination].image ?
-              encodeURI(data[this.client.anime[message.guild.id].pagination].image) :
-              'https://cdn.anemy.fr/staff/affiche/SANS-IMAGE.png',
-            },
+            description: data[
+                  this.client.anime[message.guild.id].pagination].biographie || 'aucune donnée',
+            thumbnail: data[this.client.anime[message.guild.id].pagination].image ?
+            {url: encodeURI(data[this.client.anime[message.guild.id].pagination].image)} :
+            {},
             fields: [
               {
                 name: 'native',

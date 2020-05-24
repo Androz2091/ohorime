@@ -36,16 +36,16 @@ class muteindicator extends Command {
    * @return {Message}
    */
   async launch(message, query, {guild}) {
-    if (guild.player.muteindicator) {
-      guild.player.muteindicator = false;
+    if (guild.player_muteIndicator) {
+      guild.player_muteindicator = false;
       await this.client.updateGuild(message.guild, {
-        player: guild.player,
+        player_muteIndicator: guild.player_muteIndicator,
       });
       return message.react('❌');
     } else {
-      guild.player.muteindicator = true;
+      guild.player_muteIndicator = true;
       await this.client.updateGuild(message.guild, {
-        player: guild.player,
+        player_muteIndicator: guild.player_muteIndicator,
       });
       return message.react('⭕');
     };
