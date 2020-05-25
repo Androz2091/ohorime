@@ -39,18 +39,27 @@ class Tts extends Command {
    * @return {Promise<Message>}
    */
   async launch(message, query, {guild}) {
-    /**
-     * Import player to play command
-     */
-    const player = new (require('../music/play'))(this.client);
-    await player.initQueue(this.client.music, message.guild.id);
-    if (player.hasPermission(message)) {
-      return message.reply(language(guild.lg, 'command_tts_missingPermission'));
+    this.initQueue(this.client.music, message.guild.id);
+    if (!message.guild.me.voice.channel) {
+      if (!message.member.voice.channel) {
+        return message.channel.send(
+            language(guild.lg, 'command_music_userNoJoin'),
+        );
+      };
+      if (this.hasPermission(message)) {
+        this.client.music[message.guild.id].connection =
+          await message.member.voice.channel.join();
+      } else {
+        return message.reply(
+            language(guild.lg, 'command_music_noPermissions'),
+        );
+      };
+    } else {
+      if (!this.client.music[message.guild.id].connection) {
+        this.client.music[message.guild.id].connection =
+          await message.member.voice.channel.join();
+      };
     };
-    if (this.client.music[message.guild.id].dispatcher) {
-      language(guild.lg, 'command_tts_playerOn')
-          .replace(/{{command}}+/g, `\`${guild.prefix}destroy\``);
-    }
     /**
      * Config language
      */
