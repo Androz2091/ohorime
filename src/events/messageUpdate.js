@@ -15,7 +15,7 @@ class MessageUpdate {
      * Check type message, if author is a bot, message edited
      */
     if (!message.author || message.author.bot || message.system ||
-        message.edits.length > 1) return false;
+        message.edits.length > 2) return false;
     let guild;
     /**
      * Check if guild is in message
