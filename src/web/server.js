@@ -2,10 +2,10 @@
 'use strict';
 const express = require('express');
 const app = express();
-const serializeJSON = require('../plugin/SerializeJSON');
 const {User, AuthUser} = require('./../database/lib');
 const axios = require('axios');
 const base64 = require('./../plugin/base64');
+const language = require('./../i18n');
 
 module.exports = function(client) {
   client.site = require('http').createServer(app)
@@ -45,12 +45,19 @@ module.exports = function(client) {
   app.get('/command', (req, res) => {
     return res.status(202).json(cmd);
   });
+
   app.get('/guilds', async (req, res) => {
     return res.status(202).json(await client.shard.fetchClientValues('guilds.cache'));
   });
+
   app.get('/users', async (req, res) => {
     return res.status(202).json(await User.find());
   });
+
+  app.get('/i18n/:lg/:query', (req, res) => {
+    return res.status(202).send(language(req.params.lg, req.params.query));
+  });
+
   app.get('/user/:id', async (req, res) => {
     const users = await User.findOne({id: req.params.id});
     if (!users) return res.status(404).json({error: true, message: 'user not found'});
