@@ -39,14 +39,15 @@ class Tts extends Command {
    * @return {Promise<Message>}
    */
   async launch(message, query, {guild}) {
-    this.initQueue(this.client.music, message.guild.id);
+    const player = new (require('./play'))(this.client);
+    player.initQueue(this.client.music, message.guild.id);
     if (!message.guild.me.voice.channel) {
       if (!message.member.voice.channel) {
         return message.channel.send(
             language(guild.lg, 'command_music_userNoJoin'),
         );
       };
-      if (this.hasPermission(message)) {
+      if (player.hasPermission(message)) {
         this.client.music[message.guild.id].connection =
           await message.member.voice.channel.join();
       } else {
