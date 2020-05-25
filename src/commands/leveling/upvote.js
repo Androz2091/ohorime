@@ -59,8 +59,13 @@ class Upvote extends Command {
           language(guild.lg, 'command_upvote_userNotFound'),
       );
     };
+    if (member.id === message.member.id) {
+      return message.channel.send(
+          language(guild.lg, 'command_upvote_self'),
+      );
+    };
     message.channel.send(
-        language(guild.lg, 'command_updove_vote')
+        language(guild.lg, 'command_upvote_vote')
             .replace(/{{member}}+/g, member.user.tag),
     );
     let memberData = await this.client.getUser(member.user);

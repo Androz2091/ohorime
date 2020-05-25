@@ -10,7 +10,7 @@ const userShema = {
   },
   coins: {
     'type': Number,
-    'default': 1000,
+    'default': 15000,
   },
   items: Array,
   banner: {
