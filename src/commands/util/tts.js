@@ -39,7 +39,7 @@ class Tts extends Command {
    * @return {Promise<Message>}
    */
   async launch(message, query, {guild}) {
-    const player = new (require('./play'))(this.client);
+    const player = new (require('./../music/play'))(this.client);
     player.initQueue(this.client.music, message.guild.id);
     if (!message.guild.me.voice.channel) {
       if (!message.member.voice.channel) {
