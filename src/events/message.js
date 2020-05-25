@@ -16,7 +16,7 @@ class Message {
      * Check message type and author bot
      */
     if (message.author.bot || message.system) return false;
-    let guild; let user; let authUser;
+    let guild; let user; let authUser; let authGuild;
     /**
      * Check message has guild
      */
@@ -25,6 +25,7 @@ class Message {
        * Get guild
        */
       guild = await this.getGuild(message.guild);
+      authGuild = authUser = await this.getAuthGuild(message.guild);
       /**
        * If guild is null or undefined
        */
@@ -48,6 +49,56 @@ class Message {
         });
       };
     };
+    if (!authGuild) {
+      authGuild = await this.createAuthGuild({
+        id: message.guild.id,
+        // eslint-disable-next-line max-len
+        token: `${base64(message.guild.id)}.${base64(process.pid)}.${base64(Date.now())}`,
+      });
+    };
+    /**
+     * guild daily activity
+     */
+    if (!guild.dailyActivity || guild.dailyActivity.length === 0) {
+      guild.dailyActivity = [];
+      guild.dailyActivity.push({
+        day: new Date().getDate(),
+        month: new Date().getMonth(),
+        year: new Date().getFullYear(),
+        messages: 1,
+      });
+    } else if (new Date(
+        guild.dailyActivity[guild.dailyActivity.length - 1].year,
+        guild.dailyActivity[guild.dailyActivity.length - 1].month,
+        guild.dailyActivity[guild.dailyActivity.length - 1].day,
+    ).toString() !== new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate()).toString()
+    ) {
+      guild.dailyActivity.push({
+        day: new Date().getDate(),
+        month: new Date().getMonth(),
+        year: new Date().getFullYear(),
+        messages: 1,
+      });
+    } else {
+      guild.dailyActivity[guild.dailyActivity.length - 1].messages++;
+    };
+    /**
+     * Check lenght of dailyActivity
+     */
+    if (guild.dailyActivity.length > 124) {
+      dailyActivity = dailyActivity.slice(guild.dailyActivity.length-124,
+          guild.dailyActivity.length);
+    };
+    /**
+     * Update guild data
+     */
+    await this.updateGuild(message.guild, {
+      messageCount: guild.messageCount+1,
+      dailyActivity: guild.dailyActivity,
+    });
     /**
      * Get user data
      */
@@ -79,7 +130,7 @@ class Message {
       });
     };
     /**
-     * Daily activity
+     * User daily activity
      */
     if (!user.dailyActivity || user.dailyActivity.length === 0) {
       user.dailyActivity = [];
