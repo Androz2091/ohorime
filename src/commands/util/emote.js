@@ -14,7 +14,7 @@ class Emote extends Command {
       name: 'emote',
       category: 'util',
       description: 'command_emote_description',
-      usage: 'emote (:role:)',
+      usage: 'emote (role mention)',
       nsfw: false,
       enable: true,
       guildOnly: false,

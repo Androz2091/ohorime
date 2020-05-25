@@ -1,6 +1,6 @@
 'use strict';
 const Command = require('../../plugin/Command');
-const language = require('../../translate');
+const language = require('../../i18n');
 const moment = require('moment');
 
 /**
@@ -21,11 +21,7 @@ class Nowplaying extends Command {
       guildOnly: true,
       aliases: ['np'],
       mePerm: [
-        'CONNECT',
-        'SPEAK',
         'EMBED_LINKS',
-        'ADD_REACTIONS',
-        'MANAGE_MESSAGES',
       ],
     });
     this.client = client;

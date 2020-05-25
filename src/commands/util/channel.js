@@ -15,7 +15,7 @@ class Channel extends Command {
       name: 'channel',
       category: 'util',
       description: 'command_channel_description',
-      usage: 'channel (#channel)',
+      usage: 'channel (channel mention)',
       nsfw: false,
       enable: true,
       guildOnly: false,

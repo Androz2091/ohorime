@@ -1,5 +1,5 @@
 'use strict';
-const language = require('./../translate');
+const language = require('./../i18n');
 /**
  * Event MessageUpdate
  */

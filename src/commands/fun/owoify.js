@@ -1,6 +1,6 @@
 'use strict';
 const Command = require('../../plugin/Command');
-const language = require('../../translate');
+const language = require('../../i18n');
 const {sfw} = new (require('nekos.life'))();
 
 /**
@@ -15,7 +15,7 @@ class Owoify extends Command {
       name: 'owoify',
       category: 'fun',
       description: 'command_owoify_description',
-      usage: 'owoify',
+      usage: 'owoify [text]',
       nsfw: false,
       enable: true,
       guildOnly: false,
@@ -32,7 +32,7 @@ class Owoify extends Command {
    */
   async launch(message, query, {guild}) {
     if (!query.join(' ')) {
-      return message.reply(language(guild.lg, 'value_not_found'));
+      return message.reply(language(guild.lg, 'command_owoify_requireValue'));
     };
     // eslint-disable-next-line new-cap
     const data = await sfw.OwOify({

@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 'use strict';
 const Command = require('../../plugin/Command');
-const language = require('../../translate');
+const language = require('../../i18n');
 const ytdl = require('ytdl-core');
 const {YOUTUBE_KEY} = require('../../../configuration');
 const axios = require('axios');

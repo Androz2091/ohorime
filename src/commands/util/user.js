@@ -78,7 +78,8 @@ class User extends Command {
        * Check if there is user
        */
       if (!user) {
-        return message.channel.send('Aucun utilisateur trouvé');
+        return message.channel.send(
+            language(guild.lg, 'command_user_userNotFound'));
       };
       /**
        * Create embed

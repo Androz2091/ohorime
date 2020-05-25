@@ -14,7 +14,7 @@ class Role extends Command {
       name: 'role',
       category: 'util',
       description: 'command_role_description',
-      usage: 'role',
+      usage: 'role (role mention)',
       nsfw: false,
       enable: true,
       guildOnly: false,

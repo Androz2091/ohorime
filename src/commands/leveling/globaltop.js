@@ -2,6 +2,7 @@
 'use strict';
 const Command = require('../../plugin/Command');
 const {User} = require('../../database/lib');
+const language = require('./../../i18n');
 
 /**
  * Get algorithme
@@ -57,7 +58,7 @@ class GlobalTop extends Command {
      */
     const rawBoard = users.sort((a, b) =>  b.messageCount - a.messageCount);
     const embed = {
-      title: 'Global leaderboard',
+      title: language(guild.lg, 'command_globaltop_embed_title'),
       fields: [],
     };
    for (const user in rawBoard.slice(0, 6)) {

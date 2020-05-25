@@ -1,6 +1,6 @@
 'use strict';
 const Command = require('../../plugin/Command');
-const language = require('../../translate');
+const language = require('../../i18n');
 
 /**
  * Command class
@@ -14,17 +14,13 @@ class Queue extends Command {
       name: 'queue',
       category: 'music',
       description: 'command_queue_description',
-      usage: 'queue',
+      usage: 'queue (clear [all | number])',
       nsfw: false,
       enable: true,
       guildOnly: true,
       aliases: [],
       mePerm: [
-        'CONNECT',
-        'SPEAK',
         'EMBED_LINKS',
-        'ADD_REACTIONS',
-        'MANAGE_MESSAGES',
       ],
     });
     this.client = client;

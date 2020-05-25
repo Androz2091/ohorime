@@ -1,6 +1,6 @@
 'use strict';
 const Command = require('../../plugin/Command');
-const language = require('../../translate');
+const language = require('../../i18n');
 const {sfw} = new (require('nekos.life'))();
 const {MessageAttachment} = require('discord.js');
 

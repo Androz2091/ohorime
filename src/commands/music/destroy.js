@@ -1,6 +1,6 @@
 'use strict';
 const Command = require('../../plugin/Command');
-const language = require('../../translate');
+const language = require('../../i18n');
 
 /**
  * Command class
@@ -19,8 +19,7 @@ class Destroy extends Command {
       enable: true,
       guildOnly: true,
       aliases: ['stop'],
-      mePerm: [
-      ],
+      mePerm: [],
     });
     this.client = client;
   };

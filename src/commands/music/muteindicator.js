@@ -19,11 +19,7 @@ class muteindicator extends Command {
       guildOnly: true,
       aliases: [],
       mePerm: [
-        'CONNECT',
-        'SPEAK',
-        'EMBED_LINKS',
         'ADD_REACTIONS',
-        'MANAGE_MESSAGES',
       ],
     });
     this.client = client;

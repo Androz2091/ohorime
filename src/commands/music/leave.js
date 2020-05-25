@@ -18,13 +18,7 @@ class Leave extends Command {
       enable: true,
       guildOnly: true,
       aliases: ['disconnect'],
-      mePerm: [
-        'CONNECT',
-        'SPEAK',
-        'EMBED_LINKS',
-        'ADD_REACTIONS',
-        'MANAGE_MESSAGES',
-      ],
+      mePerm: [],
     });
     this.client = client;
   };

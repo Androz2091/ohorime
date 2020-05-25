@@ -4,6 +4,7 @@ const textToSpeech = require('@google-cloud/text-to-speech');
 const client = new textToSpeech.TextToSpeechClient();
 const fs = require('fs');
 const util = require('util');
+const language = require('./../../i18n');
 
 /**
  * Tts command
@@ -17,7 +18,7 @@ class Tts extends Command {
       name: 'tts',
       category: 'util',
       description: 'command_tts_description',
-      usage: 'tts',
+      usage: 'tts [text]',
       nsfw: false,
       enable: true,
       guildOnly: true,
@@ -42,19 +43,14 @@ class Tts extends Command {
      * Import player to play command
      */
     const player = new (require('../music/play'))(this.client);
-    /**
-     * Join bot
-     */
-    const joining = await player.join(message);
-    /**
-     * Check join status
-     */
-    if (joining === 'PLAYING') {
-      return message.reply(`Vous devez arrêter la musique avant, \`${
-        guild.prefix}destroy\``);
-    } else if (joining === 'MEMBER_NOT_JOIN') {
-      return message.reply('Vous devez rejoindre le salon avant');
+    await player.initQueue(this.client.music, message.guild.id);
+    if (player.hasPermission(message)) {
+      return message.reply(language(guild.lg, 'command_tts_missingPermission'));
     };
+    if (this.client.music[message.guild.id].dispatcher) {
+      language(guild.lg, 'command_tts_playerOn')
+          .replace(/{{command}}+/g, `\`${guild.prefix}destroy\``);
+    }
     /**
      * Config language
      */
@@ -67,13 +63,14 @@ class Tts extends Command {
     if (query[0] === 'setVoice') {
       query.shift();
       this.language.set(message.guild.id, query.join(''));
-      return message.channel.send(`Now language is ${query.join(' ')}`);
+      return message.channel.send(language(guild.lg, 'command_tts_newLg')
+          .replace(/{{lg}}+/g, query.join('')));
     };
     /**
      * Check if it's query
      */
     if (!query.join('')) {
-      return message.reply('Vous devez écrire quelque chose');
+      return message.reply(language(guild.lg, 'value_not_found'));
     };
     /**
      * Create request

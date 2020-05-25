@@ -1,6 +1,6 @@
 'use strict';
 const Command = require('../../plugin/Command');
-const language = require('../../translate');
+const language = require('../../i18n');
 const arisia = new (require('node-arisia'))({
   version: 1,
   token: require('./../../../configuration').ARISIA.token,

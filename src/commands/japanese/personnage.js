@@ -1,6 +1,7 @@
 /* eslint-disable */
 'use strict';
 const Command = require('../../plugin/Command');
+const language = require('../../i18n');
 
 /**
    * Command class
@@ -19,7 +20,7 @@ class Personnage extends Command {
       enable: true,
       guildOnly: false,
       aliases: ['perso'],
-      mePerm: ['EMBED_LINKS'],
+      mePerm: ['EMBED_LINKS', 'ADD_REACTIONS'],
     });
     this.client = client;
   };
@@ -35,12 +36,12 @@ class Personnage extends Command {
       return message.channel.send({
         embed: {
           color: '#2F3136',
-          title: 'Rechercher un personnage',
+          title: language(guild.lg, 'command_personnage_embed_title'),
           // eslint-disable-next-line max-len
-          description: 'Voicie les différent parametre de recherche:\n`id`: [nombre],\n`id_page`: [caractère] Si vous voulez afficher les personnages de fiches différentes vous devez mettre les id comme cela 1,25,50,65,\n`prenom` [caractère],\n`nom` [caractère],\n`native` [caractère],\n`alternative`: [caractère]\n\nexemple: `'+
-            guild.prefix + 'personnage -prenom Sakura`',
+          description: language(guild.lg, 'command_personnage_embed_description')
+            .replace(/{{param}}+/g, '\n`id`: [nombre],\n`id_page`: [caractère] Si vous voulez afficher les personnages de fiches différentes vous devez mettre les id comme cela 1,25,50,65,\n`prenom` [caractère],\n`nom` [caractère],\n`native` [caractère],\n`alternative`: [caractère]\n\nexemple: `'),
           footer: {
-            text: 'Powered by Anemy',
+            text: language(guild.lg, 'command_personnage_embed_footer'),
             icon_url: 'https://gblobscdn.gitbook.com/spaces%2F-M4jTJ1TeTR2aTI4tuTG%2Favatar-1586713303918.png?generation=1586713304401821&alt=media',
           },
         },
@@ -54,19 +55,27 @@ class Personnage extends Command {
     const params = Object.fromEntries(mapping);
     let data = await this.client.anemy.getPersonnage(params);
     if (!data) {
-      return message.channel.send('Aucun résultat trouvé');
+      return message.channel.send(
+        language(guild.lg, 'command_personnage_result_any'),
+      );
     };
     if (data.isAxiosError) {
-      return message.channel.send('Une erreur c\'est produite');
+      return message.channel.send(
+        language(guild.lg, 'command_personnage_result_error'),
+      );
     };
     if (data.length < 1) {
-      return message.channel.send('Aucun résultat trouvé');
+      return message.channel.send(
+        language(guild.lg, 'command_personnage_result_any'),
+      );
     };
     const result = [];
     if (!data.result) result.push(data);
     data = data.result || result;
     if (!data || data.length < 1) {
-      return message.channel.send('Aucun résultat trouvé');
+      return message.channel.send(
+        language(guild.lg, 'command_personnage_result_any'),
+      );
     };
     this.client.anime[message.guild.id] = {
       message: null,
@@ -111,7 +120,8 @@ class Personnage extends Command {
             ],
             footer: {
               // eslint-disable-next-line max-len
-              text: `Powered by Anemy - page ${this.client.anime[message.guild.id].pagination+1}/${data.length}`,
+              text: language(guild.lg, 'command_personnage_result_embed_footer')
+                .replace(/{{index}}+/g, `${this.client.anime[message.guild.id].pagination+1}/${data.length}`),
               icon_url: 'https://gblobscdn.gitbook.com/spaces%2F-M4jTJ1TeTR2aTI4tuTG%2Favatar-1586713303918.png?generation=1586713304401821&alt=media',
             },
           },

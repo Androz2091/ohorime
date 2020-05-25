@@ -1,7 +1,7 @@
 'use strict';
 
 const Command = require('../../plugin/Command');
-const language = require('../../translate');
+const language = require('../../i18n');
 
 /**
  * Help command
@@ -54,7 +54,7 @@ class Help extends Command {
        * Send message
        */
       // eslint-disable-next-line max-len
-      return message.reply(`${language(guild.lg, 'command_help_command')}\`\`\`autohotkey\n%    help    %\nname :: ${command.help.name}\ndescription :: ${language(guild.lg, command.help.description)}\ncategory :: ${command.help.category}\nusage :: ${command.help.usage}\n\n%    config    %\nenable :: ${command.conf.enable}\nguildOnly :: ${'[ ' + command.conf.aliases.join(', ') + ' ]'}\nnsfw :: ${command.conf.nsfw}\nuserPerm :: ${'[ ' + command.conf.userPerm.join(', ') + ' ]'}\`\`\``);
+      return message.reply(`${language(guild.lg, 'command_help_command')}\`\`\`autohotkey\n%    help    %\nname :: ${command.help.name}\ndescription :: ${language(guild.lg, command.help.description)}\ncategory :: ${command.help.category}\nusage :: ${command.help.usage}\n\n%    config    %\nenable :: ${command.conf.enable}\aliases :: ${'[ ' + command.conf.aliases.join(', ') + ' ]'}\nnsfw :: ${command.conf.nsfw}\nuserPerm :: ${'[ ' + command.conf.userPerm.join(', ') + ' ]'}\`\`\``);
     };
     const cmd = {};
     for (const key of this.client.commands.filter((c) =>

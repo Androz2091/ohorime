@@ -11,5 +11,5 @@ const allLanguage = {
  * @return {string}
  */
 module.exports = (lg, query) =>
-  allLanguage[String(lg) || 'en'].search(query) ||
+  allLanguage[lg ? String(lg) : 'en'].search(query) ||
     `translate not found\n**lg:** ${lg}\n**query:** ${query}`;

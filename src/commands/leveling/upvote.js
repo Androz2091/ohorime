@@ -1,6 +1,7 @@
 'use strict';
 const Command = require('../../plugin/Command');
 const moment = require('moment');
+const language = require('./../../i18n');
 
 /**
  * Command class
@@ -18,8 +19,8 @@ class Upvote extends Command {
       nsfw: false,
       enable: true,
       guildOnly: false,
-      aliases: [],
-      mePerm: ['EMBED_LINKS'],
+      aliases: ['vote'],
+      mePerm: [],
     });
     this.client = client;
   };
@@ -34,7 +35,12 @@ class Upvote extends Command {
   async launch(message, query, {guild, user}) {
     if (Date.now() < (user.upvote.timeout + 21600000)) {
       // eslint-disable-next-line max-len
-      return message.channel.send(`Vous devez attendre ${moment((user.upvote.timeout+21600000)-Date.now()).format('h:mm:ss')}`);
+      return message.channel.send(
+          language(guild.lg, 'command_upvote_wait')
+              .replace(/{{item}}+/g,
+                  moment((user.upvote.timeout+21600000)-Date.now())
+                      .format('h:mm:ss')),
+      );
     };
     const member = message.mentions.members.first() ||
         message.guild.member(
@@ -49,9 +55,14 @@ class Upvote extends Command {
         message.guild.members.cache.find((member) =>
           member.toString() === query.join(''));
     if (!member) {
-      return message.channel.send('Je ne trouve pas l\'utilisateur');
+      return message.channel.send(
+          language(guild.lg, 'command_upvote_userNotFound'),
+      );
     };
-    message.channel.send(`Vous avez upvote ${member.user.tag}`);
+    message.channel.send(
+        language(guild.lg, 'command_updove_vote')
+            .replace(/{{member}}+/g, member.user.tag),
+    );
     let memberData = await this.client.getUser(member.user);
     if (!memberData) {
       memberData = await this.client.createUser({

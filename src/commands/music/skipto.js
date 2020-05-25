@@ -1,6 +1,6 @@
 'use strict';
 const Command = require('../../plugin/Command');
-const language = require('../../translate');
+const language = require('../../i18n');
 
 /**
  * Command class
@@ -14,17 +14,14 @@ class Skipto extends Command {
       name: 'skipto',
       category: 'music',
       description: 'command_skipto_description',
-      usage: 'skipto',
+      usage: 'skipto [number]',
       nsfw: false,
       enable: true,
       guildOnly: true,
       aliases: [],
       mePerm: [
-        'CONNECT',
-        'SPEAK',
         'EMBED_LINKS',
         'ADD_REACTIONS',
-        'MANAGE_MESSAGES',
       ],
     });
     this.client = client;

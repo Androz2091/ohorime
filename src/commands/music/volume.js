@@ -1,6 +1,6 @@
 'use strict';
 const Command = require('../../plugin/Command');
-const language = require('../../translate');
+const language = require('../../i18n');
 
 /**
  * Command class
@@ -13,18 +13,14 @@ class Volume extends Command {
     super(client, {
       name: 'volume',
       category: 'music',
-      description: 'command_music_description',
+      description: 'command_volume_description',
       usage: 'volume [volume] ?(boost)',
       nsfw: false,
       enable: true,
       guildOnly: true,
       aliases: [],
       mePerm: [
-        'CONNECT',
-        'SPEAK',
-        'EMBED_LINKS',
         'ADD_REACTIONS',
-        'MANAGE_MESSAGES',
       ],
     });
     this.client = client;
@@ -53,7 +49,7 @@ class Volume extends Command {
       );
     };
     if (query[1] !== 'boost') {
-      if (query[0] > 100 && query[0] < 1) {
+      if (query[0] > 100 || query[0] < 1) {
         return message.reply(
             language(guild.lg, 'command_volume_useboost'),
         );

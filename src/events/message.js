@@ -1,6 +1,6 @@
 'use strict';
 
-const language = require('./../translate');
+const language = require('./../i18n');
 const base64 = require('./../plugin/base64');
 
 /**

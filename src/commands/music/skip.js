@@ -1,6 +1,6 @@
 'use strict';
 const Command = require('../../plugin/Command');
-const language = require('../../translate');
+const language = require('../../i18n');
 
 /**
  * Command class
@@ -20,11 +20,7 @@ class Skip extends Command {
       guildOnly: true,
       aliases: [],
       mePerm: [
-        'CONNECT',
-        'SPEAK',
-        'EMBED_LINKS',
         'ADD_REACTIONS',
-        'MANAGE_MESSAGES',
       ],
     });
     this.client = client;

@@ -39,7 +39,7 @@ class GlobalRank extends Command {
       enable: true,
       guildOnly: false,
       aliases: ['grank'],
-      mePerm: ['EMBED_LINKS'],
+      mePerm: ['ATTACH_FILES'],
     });
     this.client = client;
   };
