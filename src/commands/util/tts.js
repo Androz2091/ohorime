@@ -18,7 +18,7 @@ class Tts extends Command {
       name: 'tts',
       category: 'util',
       description: 'command_tts_description',
-      usage: 'tts [text]',
+      usage: 'tts [text|lg (language)]',
       nsfw: false,
       enable: true,
       guildOnly: true,
