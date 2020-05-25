@@ -37,7 +37,7 @@ class Upvote extends Command {
       // eslint-disable-next-line max-len
       return message.channel.send(
           language(guild.lg, 'command_upvote_wait')
-              .replace(/{{item}}+/g,
+              .replace(/{{time}}+/g,
                   moment((user.upvote.timeout+21600000)-Date.now())
                       .format('h:mm:ss')),
       );
