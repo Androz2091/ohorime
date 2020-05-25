@@ -48,6 +48,9 @@ class Anime extends Command {
         },
       });
     };
+    const message_loading = await message.channel.send(
+      language(guild.lg, 'command_anime_loading'),
+    );
     let serialize = query.join(' ');
     serialize = serialize.split(/-+/g);
     serialize.shift();
@@ -170,12 +173,6 @@ class Anime extends Command {
               'Non' : 'Oui',
           inline: true,
         },
-        {
-          name: 'liked',
-          value: data[
-              this.client.anime[message.guild.id].pagination].liked  || 'aucune donnée',
-          inline: true,
-        },
       ],
       footer: {
         // eslint-disable-next-line max-len
@@ -184,6 +181,7 @@ class Anime extends Command {
         icon_url: 'https://gblobscdn.gitbook.com/spaces%2F-M4jTJ1TeTR2aTI4tuTG%2Favatar-1586713303918.png?generation=1586713304401821&alt=media',
       },
     };
+    message_loading.delete({timeout: 0});
     this.client.anime[message.guild.id].message =
       await message.channel.send({embed});
     if (data.length > 1) {

@@ -47,6 +47,9 @@ class Personnage extends Command {
         },
       });
     };
+    const message_loading = await message.channel.send(
+      language(guild.lg, 'command_anime_loading'),
+    );
     let serialize = query.join(' ');
     serialize = serialize.split(/-+/g);
     serialize.shift();
@@ -83,6 +86,7 @@ class Personnage extends Command {
       data,
       type: 'personnage',
     };
+    message_loading.delete({timeout: 0});
     this.client.anime[message.guild.id].message =
         await message.channel.send({
           embed: {
@@ -109,12 +113,6 @@ class Personnage extends Command {
                 name: 'alternative',
                 value: data[
                     this.client.anime[message.guild.id].pagination].alternative|| 'aucune donnée',
-                inline: true,
-              },
-              {
-                name: 'liked',
-                value: data[
-                    this.client.anime[message.guild.id].pagination].liked || 'aucune donnée',
                 inline: true,
               },
             ],

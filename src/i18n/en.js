@@ -216,5 +216,8 @@ module.exports = {
     'command_tts_newLg': 'Now language is {{lg}}',
     'command_user_description': 'Display user info',
     'command_user_userNotFound': 'I can\'t find the user',
+    'command_anime_loading': 'Message loading',
+    'command_personnage_loading': 'Message loading',
+    'command_staff_loading': 'Message loading',
   },
 };

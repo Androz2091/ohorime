@@ -3,3 +3,6 @@ node_modules/
 
 # credential
 configuration.js
+
+# env
+ecosystem.config.js
