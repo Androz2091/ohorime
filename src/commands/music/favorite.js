@@ -1,5 +1,6 @@
 'use strict';
 const Command = require('../../plugin/Command');
+const language = require('../../i18n');
 
 /**
  * Favorite command

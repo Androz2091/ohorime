@@ -209,9 +209,11 @@ class Message {
     /**
      * If bot can send message
      */
-    if (message.guild && message.guild.ownerID !== message.client.user.id && !message.channel.permissionsFor(message.guild.me).has('SEND_MESSAGES', {
-      checkAdmin: true
-    })) return;
+    if (message.guild &&
+      message.guild.ownerID !== message.client.user.id &&
+      !message.channel.permissionsFor(message.guild.me).has('SEND_MESSAGES', {
+        checkAdmin: true,
+      })) return;
     /**
      * check if this command exist
      */
@@ -226,10 +228,9 @@ class Message {
      */
     if (message.guild &&
        !cmd.bypass &&
-       message.guild.ownerID !== message.client.user.id &&
-       !message.channel.permissionsFor(message.guild.me).has(cmd.conf.mePerm, {
-         checkAdmin: true
-       })) {
+        !message.channel.permissionsFor(message.guild.me).has(cmd.conf.mePerm, {
+          checkAdmin: true,
+        })) {
       return message.reply(language(guild.lg, 'client_missing_permissions')
           .replace('{{map}}', `\`${cmd.conf.mePerm.join('`, `')}\``));
     };
@@ -240,7 +241,7 @@ class Message {
       !cmd.bypass &&
       message.guild.ownerID !== message.member.id &&
       !message.channel.permissionsFor(message.member).has(cmd.conf.userPerm, {
-        checkAdmin: true
+        checkAdmin: true,
       })) {
       return message.reply(language(guild.lg, 'member_missing_permission'));
     };
